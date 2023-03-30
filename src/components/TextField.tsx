@@ -1,0 +1,23 @@
+import { nanoid } from "nanoid";
+
+interface Props {
+  type: "text" | "password" | "email";
+  label: string;
+}
+
+export default function TextField(props: Props) {
+  const INPUT_ID = nanoid(6);
+
+  return (
+    <div className="mb-4 flex flex-col">
+      <label htmlFor={INPUT_ID} className="mb-2">
+        {props.label}
+      </label>
+      <input
+        type={props.type}
+        id={INPUT_ID}
+        className="rounded-xl bg-white/10 p-3 focus:outline-none"
+      />
+    </div>
+  );
+}
