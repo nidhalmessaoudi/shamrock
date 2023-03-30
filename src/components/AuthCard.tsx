@@ -9,16 +9,16 @@ interface Props extends PropsWithChildren {
 
 export default function AuthCard(props: Props) {
   return (
-    <div className="w-800px rounded-xl bg-dark-blue p-8 shadow-2xl">
-      <h1 className="mb-8 text-center text-4xl">{props.title}</h1>
+    <div className="w-1/2 rounded-xl bg-dark-blue p-12 shadow-2xl">
+      <h1 className="mb-4 text-center text-4xl">{props.title}</h1>
       <div className="flex flex-row items-center justify-between">
         <Image
-          className="w-2/5"
+          className="w-1/2"
           src={logo}
           alt="Pikri.com Logo"
           priority={true}
         />
-        <div className="w-3/5">{props.children}</div>
+        <div className="w-1/2">{props.children}</div>
       </div>
     </div>
   );

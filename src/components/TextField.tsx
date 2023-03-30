@@ -16,7 +16,7 @@ export default function TextField(props: Props) {
       <input
         type={props.type}
         id={INPUT_ID}
-        className="rounded-xl bg-white/10 p-3 focus:outline-none"
+        className="rounded-xl bg-white/10 p-3 transition-shadow focus:outline-none focus:ring-4 focus:ring-white/50"
       />
     </div>
   );
