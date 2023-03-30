@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { useId } from "react";
 
 interface Props {
   type: "text" | "password" | "email";
@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function TextField(props: Props) {
-  const INPUT_ID = nanoid(6);
+  const INPUT_ID = useId();
 
   return (
     <div className="mb-4 flex flex-col">
