@@ -20,10 +20,10 @@ export default function AuthPage(props: Props) {
         <AuthCard title={`${props.type} To Pikri`}>
           <form>
             {props.children}
-            <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-col-reverse items-center justify-between sm:flex-row">
               <Link
                 href={props.otherPageLink}
-                className="text-sm opacity-80 transition-all hover:underline hover:opacity-100 focus:outline-none focus:ring-4 focus:ring-white/50"
+                className="mr-4 mt-4 text-sm opacity-80 transition-all hover:underline hover:opacity-100 focus:outline-none focus:ring-4 focus:ring-white/50 sm:mt-0"
               >
                 {props.otherPageText}
               </Link>
@@ -31,7 +31,6 @@ export default function AuthPage(props: Props) {
                 text={props.type}
                 color="bg-white"
                 textColor="text-black"
-                align="center"
               />
             </div>
           </form>
