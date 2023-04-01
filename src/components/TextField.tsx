@@ -3,6 +3,7 @@ import { useId } from "react";
 interface Props {
   type: "text" | "password" | "email";
   label: string;
+  name?: string;
 }
 
 export default function TextField(props: Props) {
@@ -16,6 +17,7 @@ export default function TextField(props: Props) {
       <input
         type={props.type}
         id={INPUT_ID}
+        name={props.name || ""}
         className="rounded-xl bg-white/10 p-3 transition-shadow focus:outline-none focus:ring-4 focus:ring-white/50"
       />
     </div>
