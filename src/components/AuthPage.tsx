@@ -6,6 +6,7 @@ import { PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
   type: "Sign Up" | "Sign In";
+  apiPath: "/api/signup" | "/api/signin";
   otherPageText: string;
   otherPageLink: string;
 }
@@ -18,7 +19,7 @@ export default function AuthPage(props: Props) {
       </Head>
       <main className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-green-blue to-light-green text-white">
         <AuthCard title={`${props.type} To Pikri`}>
-          <form>
+          <form action={props.apiPath} method="POST">
             {props.children}
             <div className="flex flex-col-reverse items-center justify-between sm:flex-row">
               <Link

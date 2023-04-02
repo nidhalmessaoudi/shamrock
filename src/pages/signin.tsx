@@ -5,6 +5,7 @@ export default function Signin() {
   return (
     <AuthPage
       type="Sign In"
+      apiPath="/api/signin"
       otherPageLink="/signup"
       otherPageText="Don't have an account? Sign Up"
     >
