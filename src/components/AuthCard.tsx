@@ -9,7 +9,7 @@ interface Props extends PropsWithChildren {
 
 export default function AuthCard(props: Props) {
   return (
-    <div className="w-4/5 rounded-xl bg-dark-blue p-12 shadow-2xl xl:w-3/5">
+    <div className="w-4/5 rounded-xl bg-dark-blue p-8 shadow-2xl sm:p-12 xl:w-3/5">
       <h1 className="mb-8 text-center text-4xl sm:mb-4">{props.title}</h1>
       <div className="flex flex-col items-center justify-between lg:flex-row">
         <Image
