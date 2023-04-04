@@ -9,8 +9,8 @@ export default function Signin() {
       otherPageLink="/signup"
       otherPageText="Don't have an account? Sign Up"
     >
-      <TextField type="email" label="Your Email" />
-      <TextField type="password" label="Your Password" />
+      <TextField type="email" name="email" label="Your Email" />
+      <TextField type="password" name="password" label="Your Password" />
     </AuthPage>
   );
 }
