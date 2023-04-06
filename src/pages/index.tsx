@@ -3,6 +3,7 @@ import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../../libs/auth/session";
 import { InferGetServerSidePropsType } from "next";
+import Navbar from "@/components/Navbar";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -20,11 +21,14 @@ export default function Home(
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="my-4 text-center">
-        {user?.username && `Hello ${user.username},`} Welcome to pikri.com!!
-      </h1>
-      <Link href="/signup">Sign Up</Link>
-      <Link href="/signin">Sign In</Link>
+      <Navbar />
+      <main className="m-16">
+        <h1 className="my-4 text-center">
+          {user?.username && `Hello ${user.username},`} Welcome to pikri.com!!
+        </h1>
+        <Link href="/signup">Sign Up</Link>
+        <Link href="/signin">Sign In</Link>
+      </main>
     </>
   );
 }
