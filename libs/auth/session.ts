@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { IronSessionOptions } from "iron-session";
 import { NextApiRequest } from "next";
 
-interface UserSession {
+export interface UserSession {
   id: string;
   email: string;
   username: string;

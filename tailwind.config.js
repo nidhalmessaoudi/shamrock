@@ -7,7 +7,11 @@ module.exports = {
         "dark-blue": "#002B5B",
         "gray-blue": "#2B4865",
         "green-blue": "#256D85",
+        blue: "#167ec1",
         "light-green": "#8FE3CF",
+      },
+      spacing: {
+        "below-parent": "calc(100% + 5px)",
       },
     },
   },

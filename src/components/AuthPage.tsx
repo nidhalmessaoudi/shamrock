@@ -17,7 +17,7 @@ export default function AuthPage(props: Props) {
       <Head>
         <title>{`${props.type} | Pikri`}</title>
       </Head>
-      <main className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-blue to-light-green py-8 text-white">
+      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-blue to-light-green py-8 text-white">
         <AuthCard title={`${props.type} To Pikri`}>
           <form action={props.apiPath} method="POST">
             {props.children}
@@ -36,7 +36,7 @@ export default function AuthPage(props: Props) {
             </div>
           </form>
         </AuthCard>
-      </main>
+      </div>
     </>
   );
 }
