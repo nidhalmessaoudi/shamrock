@@ -1,6 +1,6 @@
 import AuthPage from "@/components/AuthPage";
 import TextField from "@/components/TextField";
-import { GetServerSidePropsContext } from "next";
+import getAuthSSRProps from "@/helpers/getAuthSSRProps";
 
 export default function Signup() {
   return (
@@ -17,4 +17,4 @@ export default function Signup() {
   );
 }
 
-// export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {};
+export const getServerSideProps = getAuthSSRProps;

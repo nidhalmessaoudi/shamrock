@@ -1,5 +1,6 @@
 import AuthPage from "@/components/AuthPage";
 import TextField from "@/components/TextField";
+import getAuthSSRProps from "@/helpers/getAuthSSRProps";
 
 export default function Signin() {
   return (
@@ -14,3 +15,5 @@ export default function Signin() {
     </AuthPage>
   );
 }
+
+export const getServerSideProps = getAuthSSRProps;

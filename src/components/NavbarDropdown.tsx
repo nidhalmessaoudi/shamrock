@@ -1,10 +1,16 @@
-import { PropsWithChildren } from "react";
+import { MouseEventHandler, PropsWithChildren, useRef } from "react";
 
 interface Props {
   username: string;
 }
 
 export default function NavbarDropdown(props: Props) {
+  const signOutRef = useRef<HTMLFormElement>(null);
+
+  function signOutHandler() {
+    signOutRef.current?.submit();
+  }
+
   return (
     <ul className="absolute right-0 top-below-parent z-50 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1">
       <DropdownItem>
@@ -22,17 +28,27 @@ export default function NavbarDropdown(props: Props) {
         <DropdownIcon name="bi-moon" />
         <span>Dark Mode</span>
       </DropdownItem>
-      <DropdownItem>
+      <DropdownItem onClick={signOutHandler}>
         <DropdownIcon name="bi-box-arrow-right" />
-        <span>Log Out</span>
+        <form action="/api/signout" method="POST" ref={signOutRef}>
+          <input type="hidden" />
+        </form>
+        <span>Sign Out</span>
       </DropdownItem>
     </ul>
   );
 }
 
-function DropdownItem(props: PropsWithChildren) {
+interface DropdownItemProps extends PropsWithChildren {
+  onClick?: MouseEventHandler<HTMLLIElement>;
+}
+
+function DropdownItem(props: DropdownItemProps) {
   return (
-    <li className="flex cursor-pointer flex-row items-center rounded-xl p-3 transition-colors hover:bg-slate-100">
+    <li
+      className="flex cursor-pointer flex-row items-center rounded-xl p-3 transition-colors hover:bg-slate-100"
+      onClick={props.onClick}
+    >
       {props.children}
     </li>
   );

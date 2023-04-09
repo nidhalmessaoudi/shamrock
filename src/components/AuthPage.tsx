@@ -1,8 +1,8 @@
 import AuthCard from "@/components/AuthCard";
 import Button from "@/components/Button";
-import Head from "next/head";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import Head from "./Head";
 
 interface Props extends PropsWithChildren {
   type: "Sign Up" | "Sign In";
@@ -14,9 +14,7 @@ interface Props extends PropsWithChildren {
 export default function AuthPage(props: Props) {
   return (
     <>
-      <Head>
-        <title>{`${props.type} | Pikri`}</title>
-      </Head>
+      <Head title={`${props.type} | Pikri`} />
       <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-blue to-light-green py-8 text-white">
         <AuthCard title={`${props.type} To Pikri`}>
           <form action={props.apiPath} method="POST">
