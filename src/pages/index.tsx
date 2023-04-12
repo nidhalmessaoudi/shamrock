@@ -10,7 +10,7 @@ export default function Home(
 
   return (
     <HomePage title="Pikri" user={user}>
-      <div className="m-16">
+      <div className="m-24">
         <h1 className="my-4 text-center">
           {user?.username && `Hello ${user.username},`} Welcome to pikri.com!!
         </h1>

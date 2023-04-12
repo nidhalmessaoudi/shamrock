@@ -35,7 +35,7 @@ export default function Navbar(props: Props) {
   }
 
   return (
-    <nav className="flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4">
+    <nav className="fixed left-0 top-0 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4">
       <div className="">
         <Link href="/">
           <Image
@@ -50,7 +50,7 @@ export default function Navbar(props: Props) {
         className="relative flex cursor-pointer select-none flex-row items-center"
         onClick={navbarDropdownHandler}
       >
-        <i className="bi bi-person-circle mr-2 text-2xl text-blue"></i>
+        <i className="bi bi-person-circle text-blue mr-2 text-2xl"></i>
         <span className="mr-2">{truncateUsername(props.user.username)}</span>
         <i className="bi bi-chevron-down text-xl"></i>
         {showNavbarDropdown && (
