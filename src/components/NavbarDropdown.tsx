@@ -18,7 +18,7 @@ export default function NavbarDropdown(props: Props) {
         <i className="bi bi-person-circle text-blue mr-3 text-6xl"></i>
         <span className="flex flex-col">
           <span className="font-bold">{props.username}</span>
-          <span className="text-sm opacity-70">See Your Profile</span>
+          <span className="text-sm text-black/70">See Your Profile</span>
         </span>
       </DropdownItem>
       <DropdownItem link="/settings">

@@ -25,7 +25,7 @@ export default function TextField(props: Props) {
       name={props.name || ""}
       className={`rounded-xl p-3 transition-shadow focus:outline-none focus:ring-4 ${
         colorVariants[props.color || "black"]
-      } ${props.disabled && "italic text-black/70"}`}
+      } disabled:italic disabled:text-black/70`}
       disabled={props.disabled}
       defaultValue={props.val || ""}
     />

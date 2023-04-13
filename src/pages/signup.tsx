@@ -10,9 +10,14 @@ export default function Signup() {
       otherPageLink="/signin"
       otherPageText="Already a Pikri user? Sign In"
     >
-      <TextField type="email" name="email" label="Your Email" />
-      <TextField type="text" name="username" label="Username" />
-      <TextField type="password" name="password" label="Password" />
+      <TextField color="white" type="email" name="email" label="Your Email" />
+      <TextField color="white" type="text" name="username" label="Username" />
+      <TextField
+        color="white"
+        type="password"
+        name="password"
+        label="Password"
+      />
     </AuthPage>
   );
 }

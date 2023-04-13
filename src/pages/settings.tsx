@@ -15,14 +15,14 @@ export default function Settings(
       <div className="mt-28 flex flex-row justify-center">
         <div className="w-3/5">
           <h1 className="text-3xl font-bold">Account Settings</h1>
-          <p className="mt-2 text-sm opacity-70">
+          <p className="mt-2 text-sm text-black/70">
             Here you can manage your account credentials.
           </p>
           <div className="mx-auto my-8 w-3/4 rounded-xl border border-gray-200 px-12 py-8">
             <div className="flex flex-row items-center">
               <i className="bi bi-person-circle mr-10 text-8xl" />
-              <Button text="Upload New Profile" className="mr-4" />
-              <Button text="Delete" color="grey" />
+              <Button className="mr-4">Upload New Profile</Button>
+              <Button color="grey">Delete</Button>
             </div>
             <TextField
               type="text"
@@ -36,8 +36,23 @@ export default function Settings(
               disabled={true}
               val={`pikri.com/${user.username}`}
             />
-            <TextField type="email" label="Email" val={user.email} />
-            <Button text="Save Account" className="mt-8" />
+            <div className="flex flex-row items-end justify-between">
+              <TextField
+                type="email"
+                label="Email"
+                val={user.email}
+                className="!mb-0 mr-4 w-[85%]"
+              />
+              <Button color="green" disabled={true}>
+                <span>Verified</span>
+                <i className="bi bi-check2 ml-1 text-base"></i>
+              </Button>
+            </div>
+            <h2 className="mb-2 mt-9 text-lg font-bold">Change Password</h2>
+            <TextField type="password" label="Current Password" />
+            <TextField type="password" label="New Password" />
+            <TextField type="password" label="Confirm Password" />
+            <Button className="mt-8">Save Account</Button>
           </div>
         </div>
       </div>
