@@ -1,12 +1,12 @@
-import { UserSession } from "../../libs/auth/session";
 import { InferGetServerSidePropsType } from "next";
 import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import HomePage from "@/components/HomePage";
+import { User } from "../../prisma/user";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
-  const user = props.user as UserSession;
+  const user = props.user as User;
 
   return (
     <HomePage title="Pikri" user={user}>

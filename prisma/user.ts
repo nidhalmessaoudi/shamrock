@@ -1,13 +1,12 @@
+import { Prisma, User as IUser } from "@prisma/client";
 import prisma from "./prisma";
 import bcrypt from "bcrypt";
 
-interface User {
-  email: string;
-  username: string;
-  password: string;
+export interface User extends Omit<IUser, "password"> {
+  password?: string;
 }
 
-export async function createUser(data: User) {
+export async function createUser(data: Prisma.UserCreateInput) {
   const user = await prisma.user.create({
     data: {
       ...data,
@@ -18,7 +17,7 @@ export async function createUser(data: User) {
   return user;
 }
 
-export async function findUser(email: string, password: string) {
+export async function authenticateUser(email: string, password: string) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (user && (await checkPassword(password, user.password))) {

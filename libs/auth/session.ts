@@ -4,8 +4,6 @@ import { NextApiRequest } from "next";
 
 export interface UserSession {
   id: string;
-  email: string;
-  username: string;
 }
 
 export const sessionOptions: IronSessionOptions = {
@@ -20,8 +18,6 @@ export const sessionOptions: IronSessionOptions = {
 export async function createUserSession(req: NextApiRequest, user: User) {
   req.session.user = {
     id: user.id,
-    email: user.email,
-    username: user.username,
   };
 
   return req.session.save();

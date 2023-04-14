@@ -1,14 +1,14 @@
 import HomePage from "@/components/HomePage";
 import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import { InferGetServerSidePropsType } from "next";
-import { UserSession } from "../../libs/auth/session";
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
+import { User } from "../../prisma/user";
 
 export default function Settings(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
-  const user = props.user as UserSession;
+  const user = props.user as User;
 
   return (
     <HomePage title="Account Settings | Pikri" user={user}>

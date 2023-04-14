@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { findUser } from "../../../prisma/user";
+import { authenticateUser } from "../../../prisma/user";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { createUserSession, sessionOptions } from "../../../libs/auth/session";
 
@@ -17,7 +17,7 @@ export default withIronSessionApiRoute(async function signin(
       return res.redirect("/signin");
     }
 
-    const user = await findUser(email, password);
+    const user = await authenticateUser(email, password);
 
     console.log(user);
 
