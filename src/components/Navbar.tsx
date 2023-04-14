@@ -1,10 +1,11 @@
 import Image from "next/image";
 
+import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
 import brand from "../../public/brand/brand.png";
 import Link from "next/link";
-import { UserSession as User } from "../../libs/auth/session";
 import NavbarDropdown from "./NavbarDropdown";
 import { useEffect, useState, MouseEvent } from "react";
+import { User } from "../../prisma/user";
 
 interface Props {
   user: User;
@@ -50,7 +51,12 @@ export default function Navbar(props: Props) {
         className="relative flex cursor-pointer select-none flex-row items-center"
         onClick={navbarDropdownHandler}
       >
-        <i className="bi bi-person-circle text-blue mr-2 text-2xl"></i>
+        <Image
+          src={defaultProfilePic}
+          alt="Pikri user"
+          className="mr-2"
+          width={35}
+        />
         <span className="mr-2">{truncateUsername(props.user.username)}</span>
         <i className="bi bi-chevron-down text-xl"></i>
         {showNavbarDropdown && (

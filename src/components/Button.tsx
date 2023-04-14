@@ -1,9 +1,10 @@
-import { PropsWithChildren } from "react";
+import { MouseEventHandler, PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
   color?: "white" | "blue" | "grey" | "green";
   className?: string;
   disabled?: boolean;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function Button(props: Props) {
@@ -22,6 +23,7 @@ export default function Button(props: Props) {
         colorVariants[color]
       } ${props.className || ""} disabled:opacity-60`}
       disabled={props.disabled || false}
+      onClick={props.onClick}
     >
       {props.children}
     </button>

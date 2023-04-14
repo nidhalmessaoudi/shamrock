@@ -1,11 +1,11 @@
 import { PropsWithChildren } from "react";
-import { UserSession } from "../../libs/auth/session";
 import Head from "./Head";
 import Navbar from "./Navbar";
+import { User } from "../../prisma/user";
 
 interface Props extends PropsWithChildren {
   title: string;
-  user: UserSession;
+  user: User;
 }
 
 export default function HomePage(props: Props) {
