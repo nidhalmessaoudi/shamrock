@@ -27,6 +27,7 @@ export default function Settings(
                 width={120}
                 alt="Pikri user"
                 className="mr-3"
+                priority={true}
               />
               <Button className="mr-4">Upload New Picture</Button>
               {user.photo && <Button color="grey">Delete</Button>}

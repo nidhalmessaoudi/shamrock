@@ -15,7 +15,7 @@ export default function NavbarDropdown(props: Props) {
   }
 
   return (
-    <ul className="absolute right-0 top-below-parent z-50 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1">
+    <ul className="absolute right-0 top-below-parent z-20 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1">
       <DropdownItem>
         <Image
           src={defaultProfilePic}
@@ -59,7 +59,7 @@ function DropdownItem(props: DropdownItemProps) {
   return (
     <li className={!props.link ? styles : ""} onClick={props.onClick}>
       {props.link && (
-        <Link href={props.link} className={styles}>
+        <Link href={props.link} className={styles} shallow={true}>
           {props.children}
         </Link>
       )}

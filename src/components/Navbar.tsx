@@ -36,9 +36,9 @@ export default function Navbar(props: Props) {
   }
 
   return (
-    <nav className="fixed left-0 top-0 z-50 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4 backdrop-blur-md">
+    <nav className="fixed left-0 top-0 z-10 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4 backdrop-blur-md">
       <div className="">
-        <Link href="/">
+        <Link href="/" shallow={true}>
           <Image
             src={brand}
             alt="Pikri.com Logo"
