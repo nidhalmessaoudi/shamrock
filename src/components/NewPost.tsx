@@ -74,7 +74,7 @@ export default function NewPost(props: Props) {
           />
         </div>
         <div className="flex w-full justify-between px-6">
-          <Button onClick={submitPostHandler}>
+          <Button onClick={submitPostHandler} disabled={postMutation.isLoading}>
             {postMutation.isLoading && <Spinner />}
             Post
           </Button>
