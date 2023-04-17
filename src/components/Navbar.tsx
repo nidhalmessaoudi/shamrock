@@ -5,10 +5,10 @@ import brand from "../../public/brand/brand.png";
 import Link from "next/link";
 import NavbarDropdown from "./NavbarDropdown";
 import { useEffect, useState, MouseEvent } from "react";
-import { User } from "../../prisma/user";
+import { IUser } from "../../prisma/user";
 
 interface Props {
-  user: User;
+  user: IUser;
 }
 
 export default function Navbar(props: Props) {

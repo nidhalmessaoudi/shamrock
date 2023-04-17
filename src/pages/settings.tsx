@@ -3,14 +3,14 @@ import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import { InferGetServerSidePropsType } from "next";
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
-import { User } from "../../prisma/user";
+import { IUser } from "../../prisma/user";
 import Image from "next/image";
 import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
 
 export default function Settings(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
-  const user = props.user as User;
+  const user = props.user as IUser;
 
   return (
     <HomePage title="Account Settings | Pikri" user={user}>

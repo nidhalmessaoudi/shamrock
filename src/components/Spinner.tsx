@@ -1,7 +1,18 @@
-export default function Spinner() {
+interface Props {
+  color?: "white" | "black";
+}
+
+export default function Spinner(props: Props) {
+  const colorVariants = {
+    white: "text-white",
+    black: "text-black",
+  };
+
   return (
     <svg
-      className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+      className={`-ml-1 mr-3 h-5 w-5 animate-spin ${
+        colorVariants[props.color || "white"]
+      }`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -12,7 +23,7 @@ export default function Spinner() {
         cy="12"
         r="10"
         stroke="currentColor"
-        stroke-width="4"
+        strokeWidth="4"
       ></circle>
       <path
         className="opacity-75"

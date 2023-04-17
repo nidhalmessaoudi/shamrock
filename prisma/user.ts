@@ -1,8 +1,8 @@
-import { Prisma, User as IUser } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import prisma from "./prisma";
 import bcrypt from "bcrypt";
 
-export interface User extends Omit<IUser, "password"> {
+export interface IUser extends Omit<User, "password"> {
   password?: string;
 }
 

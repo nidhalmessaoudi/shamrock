@@ -2,14 +2,14 @@ import Image from "next/image";
 import { useMutation } from "react-query";
 import { MouseEvent, useState, ChangeEvent } from "react";
 import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
-import { User } from "../../prisma/user";
+import { IUser } from "../../prisma/user";
 import Button from "./Button";
 import axios from "axios";
 import Spinner from "./Spinner";
 
 interface Props {
   onClose: () => void;
-  user: User;
+  user: IUser;
 }
 
 export default function NewPost(props: Props) {
