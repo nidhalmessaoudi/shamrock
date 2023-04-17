@@ -1,8 +1,11 @@
 import Image from "next/image";
-import { MouseEvent } from "react";
+import { useMutation } from "react-query";
+import { MouseEvent, useState, ChangeEvent } from "react";
 import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
 import { User } from "../../prisma/user";
 import Button from "./Button";
+import axios from "axios";
+import Spinner from "./Spinner";
 
 interface Props {
   onClose: () => void;
@@ -10,6 +13,12 @@ interface Props {
 }
 
 export default function NewPost(props: Props) {
+  const [val, setVal] = useState("");
+
+  const postMutation = useMutation((newPost: { text: string }) => {
+    return axios.post("/api/posts", newPost);
+  });
+
   function overlayClickHandler(e: MouseEvent) {
     const target = e.target;
 
@@ -22,6 +31,15 @@ export default function NewPost(props: Props) {
 
   function closeHandler() {
     props.onClose();
+  }
+
+  function textChangeHandler(e: ChangeEvent) {
+    const target = e.target as HTMLTextAreaElement;
+    setVal(target.value);
+  }
+
+  function submitPostHandler() {
+    postMutation.mutate({ text: val });
   }
 
   return (
@@ -46,6 +64,8 @@ export default function NewPost(props: Props) {
             className="w-[8%]"
           />
           <textarea
+            value={val}
+            onChange={textChangeHandler}
             className="w-[90%] resize-none overflow-auto px-2 py-4"
             cols={30}
             rows={10}
@@ -53,8 +73,11 @@ export default function NewPost(props: Props) {
             placeholder="Type anything you want here..."
           />
         </div>
-        <div className="flex w-full justify-end px-6">
-          <Button>Post</Button>
+        <div className="flex w-full justify-between px-6">
+          <Button onClick={submitPostHandler}>
+            {postMutation.isLoading && <Spinner />}
+            Post
+          </Button>
         </div>
       </div>
     </div>

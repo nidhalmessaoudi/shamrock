@@ -21,7 +21,9 @@ export default function Button(props: Props) {
     <button
       className={`flex select-none flex-row items-center rounded-xl px-5 py-3 transition-all hover:opacity-90 focus:outline-none focus:ring-4 active:border-0 ${
         colorVariants[color]
-      } ${props.className || ""} disabled:opacity-60`}
+      } ${
+        props.className || ""
+      } disabled:cursor-not-allowed disabled:opacity-60`}
       disabled={props.disabled || false}
       onClick={props.onClick}
     >

@@ -16,4 +16,14 @@ model User {
   username String  @unique
   password String
   photo    String?
+  posts    Post[]
+}
+
+model Post {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   @db.ObjectId
+  text      String
+  images    String[] @default([])
 }
