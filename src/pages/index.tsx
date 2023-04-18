@@ -10,6 +10,7 @@ import axios from "axios";
 import { IPost } from "../../prisma/post";
 import Post from "../components/Post";
 import Spinner from "@/components/Spinner";
+import K from "@/K";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -37,10 +38,11 @@ export default function Home(
   }
 
   return (
-    <HomePage title="Pikri" user={user}>
+    <HomePage title={K.BRAND} user={user}>
       <div className="m-24 flex flex-col items-center">
         <h1 className="my-4">
-          {user?.username && `Hello ${user.username},`} Welcome to pikri.com!!
+          {user?.username && `Hello ${user.username},`} Welcome to
+          shamrock.site!!
         </h1>
         <Button onClick={newPostClickHandler}>New Post</Button>
         {isLoading && <Spinner color="black" />}
