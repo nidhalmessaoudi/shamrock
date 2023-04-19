@@ -29,6 +29,7 @@ export default function Home(
   }
 
   function newPostModalCloseHandler() {
+    document.body.classList.remove("overflow-hidden");
     setShowNewPostModal(false);
   }
 
