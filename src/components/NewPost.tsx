@@ -55,20 +55,18 @@ export default function NewPost(props: Props) {
 
   return (
     <div
-      className="fixed left-0 top-0 z-30 flex min-h-screen w-full flex-row items-center justify-center bg-black/50"
+      className="fixed bottom-0 left-0 z-30 flex h-screen min-h-fit w-full flex-row items-center justify-center overflow-auto bg-black/50 p-8"
       onClick={overlayClickHandler}
     >
-      <div className="new-post relative z-40 m-2 h-[90vh] max-h-[28rem] w-2/5 overflow-auto rounded-xl bg-white">
-        <div className="absolute left-0 top-0 w-full rounded-tl-xl rounded-tr-xl border-b border-solid border-gray-200 bg-white px-6 py-4">
-          <div className="flex w-full flex-row items-center justify-between">
-            <h2 className="text-2xl font-bold">New Post</h2>
-            <i
-              className="bi bi-x-lg cursor-pointer text-2xl"
-              onClick={props.onClose}
-            ></i>
-          </div>
+      <div className="new-post z-40 my-auto h-[28rem] w-2/5 rounded-xl bg-white">
+        <div className="flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 px-6 py-4">
+          <h2 className="text-2xl font-bold">New Post</h2>
+          <i
+            className="bi bi-x-lg cursor-pointer text-2xl"
+            onClick={props.onClose}
+          ></i>
         </div>
-        <div className="mt-16 flex flex-row items-start justify-between px-6 py-4">
+        <div className="mt-4 flex flex-row items-start justify-between px-6 py-4">
           <DefaultProfilePicture className="w-[8%]" />
           <textarea
             value={val}
