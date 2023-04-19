@@ -1,11 +1,10 @@
-import Image from "next/image";
 import { useMutation } from "react-query";
 import { MouseEvent, useState, ChangeEvent } from "react";
-import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
 import { IUser } from "../../prisma/user";
 import Button from "./Button";
 import axios from "axios";
 import Spinner from "./Spinner";
+import DefaultProfilePicture from "./DefaultProfilePicture";
 
 interface Props {
   onClose: () => void;
@@ -58,17 +57,11 @@ export default function NewPost(props: Props) {
           </div>
         </div>
         <div className="mt-16 flex flex-row items-start justify-between px-6 py-4">
-          <Image
-            src={defaultProfilePic}
-            alt={props.user.username}
-            className="w-[8%]"
-          />
+          <DefaultProfilePicture className="w-[8%]" />
           <textarea
             value={val}
             onChange={textChangeHandler}
-            className="w-[90%] resize-none overflow-auto px-2 py-4"
-            cols={30}
-            rows={10}
+            className="h-3/5 w-[90%] resize-none overflow-auto px-2 py-4"
             autoFocus={true}
             placeholder="Type anything you want here..."
           />

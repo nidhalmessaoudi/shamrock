@@ -23,7 +23,7 @@ export default function Home(
     axios.get(url).then((res) => res.data.data.posts);
   const { data, error, isLoading } = useSWR("/api/posts", SWRFetcher);
 
-  function newPostClickHandler() {
+  function newPostOpenHandler() {
     setShowNewPostModal(true);
   }
 
@@ -44,7 +44,7 @@ export default function Home(
           {user?.username && `Hello ${user.username},`} Welcome to
           shamrock.site!!
         </h1>
-        <Button onClick={newPostClickHandler}>New Post</Button>
+        <Button onClick={newPostOpenHandler}>New Post</Button>
         {isLoading && <Spinner color="black" />}
         {error && <p>Failed to load posts!</p>}
         {data && renderPosts()}

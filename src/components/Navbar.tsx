@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
 import brand from "../../public/brand/brand.png";
 import Link from "next/link";
 import NavbarDropdown from "./NavbarDropdown";
 import { useEffect, useState, MouseEvent } from "react";
 import { IUser } from "../../prisma/user";
+import DefaultProfilePicture from "./DefaultProfilePicture";
 
 interface Props {
   user: IUser;
@@ -41,7 +41,7 @@ export default function Navbar(props: Props) {
         <Link href="/" shallow={true}>
           <Image
             src={brand}
-            alt="Pikri.com Logo"
+            alt="Shamrock Logo"
             width={130}
             className="object-contain"
           />
@@ -51,12 +51,7 @@ export default function Navbar(props: Props) {
         className="relative flex cursor-pointer select-none flex-row items-center"
         onClick={navbarDropdownHandler}
       >
-        <Image
-          src={defaultProfilePic}
-          alt="Pikri user"
-          className="mr-2"
-          width={35}
-        />
+        <DefaultProfilePicture className="mr-2 w-[35px]" />
         <span className="mr-2">{truncateUsername(props.user.username)}</span>
         <i className="bi bi-chevron-down text-xl"></i>
         {showNavbarDropdown && (

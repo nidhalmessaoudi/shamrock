@@ -4,8 +4,7 @@ import { InferGetServerSidePropsType } from "next";
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
 import { IUser } from "../../prisma/user";
-import Image from "next/image";
-import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
+import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 
 export default function Settings(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -22,13 +21,7 @@ export default function Settings(
           </p>
           <div className="mx-auto my-8 w-3/4 rounded-xl border border-gray-200 px-12 py-8">
             <div className="flex flex-row items-center">
-              <Image
-                src={defaultProfilePic}
-                width={120}
-                alt="Pikri user"
-                className="mr-3"
-                priority={true}
-              />
+              <DefaultProfilePicture className="mr-3 w-[120px]" />
               <Button className="mr-4">Upload New Picture</Button>
               {user.photo && <Button color="grey">Delete</Button>}
             </div>

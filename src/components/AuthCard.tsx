@@ -13,9 +13,9 @@ export default function AuthCard(props: Props) {
       <h1 className="mb-8 text-center text-4xl sm:mb-4">{props.title}</h1>
       <div className="flex flex-col items-center justify-between lg:flex-row">
         <Image
-          className="hidden w-1/2 pr-10 lg:block"
+          className="hidden w-1/2 object-contain pr-10 lg:block"
           src={logo}
-          alt="Pikri.com Logo"
+          alt="Shamrock Logo"
           priority={true}
         />
         <div className="w-full lg:w-1/2">{props.children}</div>

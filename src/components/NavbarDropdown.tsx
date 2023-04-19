@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { MouseEventHandler, PropsWithChildren, useRef } from "react";
-import defaultProfilePic from "../../public/users/defaultProfilePicture.svg";
+import DefaultProfilePicture from "./DefaultProfilePicture";
 
 interface Props {
   username: string;
@@ -17,12 +16,7 @@ export default function NavbarDropdown(props: Props) {
   return (
     <ul className="absolute right-0 top-below-parent z-20 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1">
       <DropdownItem>
-        <Image
-          src={defaultProfilePic}
-          width={80}
-          alt="Pikri user"
-          className="mr-3"
-        />
+        <DefaultProfilePicture className="mr-3 w-[80px]" />
         <span className="flex flex-col">
           <span className="font-bold">{props.username}</span>
           <span className="text-sm text-black/70">See Your Profile</span>
