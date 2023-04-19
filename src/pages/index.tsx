@@ -24,6 +24,7 @@ export default function Home(
   const { data, error, isLoading } = useSWR("/api/posts", SWRFetcher);
 
   function newPostOpenHandler() {
+    document.body.classList.add("overflow-hidden");
     setShowNewPostModal(true);
   }
 

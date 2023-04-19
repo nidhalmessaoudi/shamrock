@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { MouseEvent, useState, ChangeEvent } from "react";
+import { MouseEvent, useState, ChangeEvent, useEffect } from "react";
 import { IUser } from "../../prisma/user";
 import Button from "./Button";
 import axios from "axios";
@@ -18,6 +18,22 @@ export default function NewPost(props: Props) {
     return axios.post("/api/posts", newPost);
   });
 
+  useEffect(() => {
+    function escapePressHandler(e: KeyboardEvent) {
+      if (e.key !== "Escape") {
+        return;
+      }
+
+      props.onClose();
+    }
+
+    window.addEventListener("keydown", escapePressHandler);
+
+    return () => {
+      window.removeEventListener("keydown", escapePressHandler);
+    };
+  });
+
   function overlayClickHandler(e: MouseEvent) {
     const target = e.target;
 
@@ -25,10 +41,6 @@ export default function NewPost(props: Props) {
       return;
     }
 
-    props.onClose();
-  }
-
-  function closeHandler() {
     props.onClose();
   }
 
@@ -43,16 +55,16 @@ export default function NewPost(props: Props) {
 
   return (
     <div
-      className="absolute left-0 top-0 z-30 flex min-h-screen w-full flex-row items-center justify-center bg-black/50"
+      className="fixed left-0 top-0 z-30 flex min-h-screen w-full flex-row items-center justify-center bg-black/50"
       onClick={overlayClickHandler}
     >
-      <div className="new-post relative z-40 m-8 h-[28rem] w-2/5 rounded-xl bg-white">
+      <div className="new-post relative z-40 m-2 h-[90vh] max-h-[28rem] w-2/5 overflow-auto rounded-xl bg-white">
         <div className="absolute left-0 top-0 w-full rounded-tl-xl rounded-tr-xl border-b border-solid border-gray-200 bg-white px-6 py-4">
           <div className="flex w-full flex-row items-center justify-between">
             <h2 className="text-2xl font-bold">New Post</h2>
             <i
               className="bi bi-x-lg cursor-pointer text-2xl"
-              onClick={closeHandler}
+              onClick={props.onClose}
             ></i>
           </div>
         </div>
