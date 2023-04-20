@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { MouseEvent, useState, ChangeEvent, useEffect } from "react";
+import { MouseEvent, useState, useEffect, ChangeEvent } from "react";
 import { IUser } from "../../prisma/user";
 import Button from "./Button";
 import axios from "axios";
@@ -44,9 +44,8 @@ export default function NewPost(props: Props) {
     props.onClose();
   }
 
-  function textChangeHandler(e: ChangeEvent) {
-    const target = e.target as HTMLTextAreaElement;
-    setVal(target.value);
+  function textChangeHandler(e: ChangeEvent<HTMLTextAreaElement>) {
+    setVal(e.currentTarget.value);
   }
 
   function submitPostHandler() {
@@ -71,7 +70,7 @@ export default function NewPost(props: Props) {
           <textarea
             value={val}
             onChange={textChangeHandler}
-            className="h-3/5 w-[90%] resize-none overflow-auto px-2 py-4"
+            className="h-48 w-[90%] resize-none overflow-auto px-2 py-4"
             autoFocus={true}
             placeholder="Type anything you want here..."
           />
