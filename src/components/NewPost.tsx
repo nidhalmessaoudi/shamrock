@@ -75,6 +75,7 @@ export default function NewPost(props: Props) {
             <div className="relative mb-4 w-fit">
               <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-blue-400"></i>
               <select
+                title="Category"
                 ref={selectRef}
                 className="w-32 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-blue-400 focus:shadow-lg focus:outline-none"
               >
@@ -116,7 +117,10 @@ export default function NewPost(props: Props) {
         </div>
         <div className="absolute bottom-0 left-0 z-40 w-full bg-white px-6">
           <div className="flex items-center justify-between border-t border-solid border-gray-200 px-2 py-4">
-            <button className="hover::bg-blue-50 flex flex-row items-center justify-center rounded-xl border border-blue-400 px-3 py-2 text-sm text-blue-400 transition-colors hover:bg-blue-50 focus:shadow-lg focus:outline-none">
+            <button
+              title="Attach Images"
+              className="hover::bg-blue-50 flex flex-row items-center justify-center rounded-xl border border-blue-400 px-3 py-2 text-sm text-blue-400 transition-colors hover:bg-blue-50 focus:shadow-lg focus:outline-none"
+            >
               <i className="bi bi-card-image mr-2 text-base"></i>
               <span>Images</span>
             </button>
