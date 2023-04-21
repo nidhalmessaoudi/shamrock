@@ -19,7 +19,7 @@ export default function Button(props: Props) {
 
   return (
     <button
-      className={`flex select-none flex-row items-center rounded-xl px-5 py-3 transition-all hover:opacity-90 focus:outline-none focus:ring-4 active:border-0 ${
+      className={`flex select-none flex-row items-center justify-center rounded-xl px-5 py-3 text-lg uppercase transition-all hover:opacity-90 focus:outline-none focus:ring-4 active:border-0 ${
         colorVariants[color]
       } ${
         props.className || ""
