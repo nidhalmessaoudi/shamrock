@@ -5,6 +5,7 @@ import Button from "./Button";
 import axios from "axios";
 import Spinner from "./Spinner";
 import DefaultProfilePicture from "./DefaultProfilePicture";
+import K from "@/K";
 
 interface Props {
   onClose: () => void;
@@ -12,12 +13,21 @@ interface Props {
 }
 
 export default function NewPost(props: Props) {
+  const [category, setCategory] = useState("All");
   const [val, setVal] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
   const [attachedImages, setAttachedImages] = useState<File[]>([]);
 
-  const postMutation = useMutation((newPost: { text: string }) => {
-    return axios.post("/api/posts", newPost);
+  const postMutation = useMutation(() => {
+    const post = {
+      text: val,
+      category,
+      images: attachedImages,
+    };
+
+    return axios.post("/api/posts", post, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   });
 
   useEffect(() => {
@@ -46,12 +56,18 @@ export default function NewPost(props: Props) {
     props.onClose();
   }
 
+  function categoryChangeHandler(e: ChangeEvent<HTMLSelectElement>) {
+    setCategory(e.currentTarget.value);
+  }
+
   function textChangeHandler(e: ChangeEvent<HTMLTextAreaElement>) {
     setVal(e.currentTarget.value);
   }
 
-  function submitPostHandler() {
-    postMutation.mutate({ text: val });
+  function submitPostHandler(e: MouseEvent) {
+    e.preventDefault();
+
+    postMutation.mutate();
   }
 
   function attachImagesHandler() {
@@ -76,8 +92,8 @@ export default function NewPost(props: Props) {
     imageInput.current?.click();
   }
 
-  function removeImageHandler(e: MouseEvent<HTMLElement>) {
-    const target = e.currentTarget;
+  function removeImageHandler(e: MouseEvent) {
+    const target = e.target as HTMLElement;
     const imgIndex = target.dataset.img;
 
     if (!imgIndex) {
@@ -109,12 +125,15 @@ export default function NewPost(props: Props) {
             <div className="relative mb-4 w-fit">
               <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-blue-400"></i>
               <select
+                onChange={categoryChangeHandler}
                 title="Category"
-                className="w-32 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-blue-400 focus:shadow-lg focus:outline-none"
+                className="w-28 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-blue-400 focus:shadow-lg focus:outline-none"
               >
-                <option value="football">Football</option>
-                <option value="soccer">Soccer</option>
-                <option value="basketball">Basketball</option>
+                {K.POST_CATEGORIES.map((category, i) => (
+                  <option key={i} value={category}>
+                    {category}
+                  </option>
+                ))}
               </select>
             </div>
             <textarea
@@ -128,18 +147,21 @@ export default function NewPost(props: Props) {
         </div>
         {attachedImages.length > 0 && (
           <div className="px-6">
-            <div className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-2 border-t border-solid border-gray-200 px-2 py-4">
+            <div
+              className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-2 border-t border-solid border-gray-200 px-2 py-4"
+              onClick={removeImageHandler}
+            >
               {attachedImages.map((img, i) => {
                 return (
                   <div
                     key={i}
                     className="flex w-[49%] flex-row items-center justify-between rounded-xl bg-blue-400 px-3 py-1 text-white"
+                    title={img.name}
                   >
                     <span className="truncate">{img.name}</span>
                     <i
                       className="bi bi-x-lg ml-2 cursor-pointer text-lg"
                       data-img={i}
-                      onClick={removeImageHandler}
                     ></i>
                   </div>
                 );
@@ -166,6 +188,7 @@ export default function NewPost(props: Props) {
               />
             </button>
             <Button
+              type="submit"
               onClick={submitPostHandler}
               disabled={postMutation.isLoading}
             >

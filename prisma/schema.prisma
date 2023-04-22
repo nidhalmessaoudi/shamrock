@@ -26,4 +26,15 @@ model Post {
   authorId  String   @db.ObjectId
   text      String
   images    String[] @default([])
+  category  Category @default(All)
+}
+
+enum Category {
+  All
+  NBA
+  NFL
+  MLB
+  Soccer
+  UFC
+  NHL
 }

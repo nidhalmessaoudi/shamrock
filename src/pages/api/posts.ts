@@ -2,6 +2,13 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "../../../libs/auth/session";
 import prisma from "../../../prisma/prisma";
+import formidable from "formidable";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default withIronSessionApiRoute(async function posts(
   req: NextApiRequest,
@@ -27,12 +34,21 @@ sessionOptions);
 async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
   const userId = req.session.user?.id;
 
+  const form = formidable();
+
+  form.parse(req, (err, fields, files) => {
+    console.log(fields);
+    console.log(files);
+  });
+
   if (!userId) {
     return res.status(403).json({
       status: "fail",
       message: "You need to be authenticated to access this route.",
     });
   }
+
+  console.log(req.body);
 
   const postText = req.body.text as string;
 
