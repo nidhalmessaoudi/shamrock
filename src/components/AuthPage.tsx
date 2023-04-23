@@ -27,7 +27,9 @@ export default function AuthPage(props: Props) {
               >
                 {props.otherPageText}
               </Link>
-              <Button color="white">{props.type}</Button>
+              <Button type="submit" color="white">
+                {props.type}
+              </Button>
             </div>
           </form>
         </AuthCard>
