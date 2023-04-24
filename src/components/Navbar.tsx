@@ -6,6 +6,7 @@ import NavbarDropdown from "./NavbarDropdown";
 import { useEffect, useState, MouseEvent } from "react";
 import { IUser } from "../../prisma/user";
 import DefaultProfilePicture from "./DefaultProfilePicture";
+import truncateUsername from "@/helpers/truncateUsername";
 
 interface Props {
   user: IUser;
@@ -51,7 +52,7 @@ export default function Navbar(props: Props) {
         className="relative flex cursor-pointer select-none flex-row items-center"
         onClick={navbarDropdownHandler}
       >
-        <DefaultProfilePicture className="mr-2 w-[35px]" />
+        <DefaultProfilePicture className="mr-2 w-9" />
         <span className="mr-2">{truncateUsername(props.user.username)}</span>
         <i className="bi bi-chevron-down text-xl"></i>
         {showNavbarDropdown && (
@@ -60,13 +61,4 @@ export default function Navbar(props: Props) {
       </div>
     </nav>
   );
-}
-
-function truncateUsername(username: string) {
-  const MAX_LENGTH = 12;
-  let truncated = username.substring(0, MAX_LENGTH);
-  if (truncated !== username) {
-    truncated += "...";
-  }
-  return truncated;
 }

@@ -11,6 +11,9 @@ import { IPost } from "../../prisma/post";
 import Post from "../components/Post";
 import Spinner from "@/components/Spinner";
 import K from "@/K";
+import Sidebar from "@/components/Sidebar";
+import DefaultProfilePicture from "@/components/DefaultProfilePicture";
+import truncateUsername from "@/helpers/truncateUsername";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -39,8 +42,49 @@ export default function Home(
     return data?.map((post) => <Post data={post} key={post.id} />);
   }
 
+  const DUMMY_USERNAMES = [
+    "division_bell0000",
+    "david___gilmour_ftwww",
+    "bunch",
+    "heavily",
+    "present",
+    "cardamom",
+  ];
+
   return (
     <HomePage title={K.BRAND} user={user}>
+      <div className="fixed right-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
+        <Sidebar title="Followers" className="mb-4">
+          <div className="px-1">
+            {DUMMY_USERNAMES.map((username, i) => (
+              <div
+                key={i}
+                className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200"
+                title={username}
+              >
+                <DefaultProfilePicture className="w-14" />
+                <span className="ml-2 font-bold">
+                  {truncateUsername(username)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Sidebar>
+        <footer className="flex w-[24rem] flex-row flex-wrap items-center gap-x-4 gap-y-2 break-words px-6 text-sm text-black/70">
+          <p>Terms of service</p>
+          <p>Privacy Policy</p>
+          <p>
+            © {new Date().getFullYear()} Sharmrock.site. All rights are
+            reserved.
+          </p>
+        </footer>
+      </div>
+      <div className="fixed left-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
+        <Sidebar title="Categories" className="mb-16">
+          this is categories
+        </Sidebar>
+        <Sidebar title="Sort">this is the sorting mechanism</Sidebar>
+      </div>
       <div className="m-24 flex flex-col items-center">
         <h1 className="my-4">
           {user?.username && `Hello ${user.username},`} Welcome to

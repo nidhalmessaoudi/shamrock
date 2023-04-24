@@ -48,7 +48,7 @@ interface DropdownItemProps extends PropsWithChildren {
 
 function DropdownItem(props: DropdownItemProps) {
   const styles =
-    "flex cursor-pointer flex-row items-center rounded-xl p-3 transition-colors hover:bg-slate-100";
+    "flex cursor-pointer flex-row items-center rounded-xl p-3 transition-colors hover:bg-gray-100";
 
   return (
     <li className={!props.link ? styles : ""} onClick={props.onClick}>
