@@ -123,11 +123,11 @@ export default function NewPost(props: Props) {
           <DefaultProfilePicture className="w-[8%]" />
           <div className="flex w-[90%] flex-col px-2">
             <div className="relative mb-4 w-fit">
-              <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-blue-400"></i>
+              <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-green-blue"></i>
               <select
                 onChange={categoryChangeHandler}
                 title="Category"
-                className="w-28 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-blue-400 focus:shadow-lg focus:outline-none"
+                className="w-28 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-green-blue focus:shadow-lg focus:outline-none"
               >
                 {K.POST_CATEGORIES.map((category, i) => (
                   <option key={i} value={category}>
@@ -155,7 +155,7 @@ export default function NewPost(props: Props) {
                 return (
                   <div
                     key={i}
-                    className="flex w-[49%] flex-row items-center justify-between rounded-xl bg-blue-400 px-3 py-1 text-white"
+                    className="flex w-[49%] flex-row items-center justify-between rounded-xl bg-green-blue/60 px-3 py-1 text-white"
                     title={img.name}
                   >
                     <span className="truncate">{img.name}</span>
@@ -174,7 +174,7 @@ export default function NewPost(props: Props) {
             <button
               onClick={fireAttachHandler}
               title="Attach Images"
-              className="hover::bg-blue-50 flex flex-row items-center justify-center rounded-xl border border-blue-400 px-3 py-2 text-sm text-blue-400 transition-colors hover:bg-blue-50 focus:shadow-lg focus:outline-none"
+              className="flex flex-row items-center justify-center rounded-xl border border-green-blue px-3 py-2 text-sm text-green-blue transition-colors hover:bg-green-blue/10 focus:shadow-lg focus:outline-none"
             >
               <i className="bi bi-card-image mr-2 text-base"></i>
               <span>Images</span>

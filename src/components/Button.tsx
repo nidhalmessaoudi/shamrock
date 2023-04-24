@@ -11,7 +11,7 @@ interface Props extends PropsWithChildren {
 export default function Button(props: Props) {
   const colorVariants = {
     white: "focus:ring-white/50 bg-white text-black",
-    blue: "focus:ring-blue-600/50 bg-blue-600 text-white",
+    blue: "focus:ring-green-blue/50 bg-green-blue text-white",
     grey: "focus:ring-slate-200/50 bg-slate-200 text-black",
     green: "focus:ring-green-600/50 bg-green-600 text-white",
   };

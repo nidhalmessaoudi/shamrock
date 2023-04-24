@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { PropsWithChildren } from "react";
 
-import logo from "../../public/brand/logo.png";
+import logoWhite from "../../public/brand/logoWhite.png";
 
 interface Props extends PropsWithChildren {
   title: string;
@@ -15,7 +15,7 @@ export default function AuthCard(props: Props) {
         <div className="hidden w-1/2 pr-10 lg:flex lg:items-center lg:justify-center">
           <Image
             className="w-4/5 object-contain"
-            src={logo}
+            src={logoWhite}
             alt="Shamrock Logo"
             priority={true}
           />
