@@ -74,8 +74,7 @@ export default function Home(
           <p>Terms of service</p>
           <p>Privacy Policy</p>
           <p>
-            © {new Date().getFullYear()} Sharmrock.site. All rights are
-            reserved.
+            © {new Date().getFullYear()} Shamrock.site. All rights are reserved.
           </p>
         </footer>
       </div>

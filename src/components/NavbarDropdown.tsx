@@ -14,7 +14,10 @@ export default function NavbarDropdown(props: Props) {
   }
 
   return (
-    <ul className="absolute right-0 top-below-parent z-20 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1">
+    <ul
+      tabIndex={0}
+      className="absolute right-0 top-below-parent z-20 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1"
+    >
       <DropdownItem>
         <DefaultProfilePicture className="mr-3 w-[80px]" />
         <span className="flex flex-col">
