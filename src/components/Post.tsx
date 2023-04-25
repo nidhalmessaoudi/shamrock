@@ -4,7 +4,7 @@ import DefaultProfilePicture from "./DefaultProfilePicture";
 
 export default function Post(props: { data: IPost }) {
   return (
-    <div className="h-fit w-full rounded-xl border border-gray-200 bg-white p-4">
+    <div className="mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white p-4">
       <div className="flex flex-row items-center">
         <DefaultProfilePicture className="w-16" />
         <div className="ml-2 flex flex-col">

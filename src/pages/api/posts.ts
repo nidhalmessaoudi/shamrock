@@ -100,7 +100,10 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function getPosts(req: NextApiRequest, res: NextApiResponse) {
-  const posts = await prisma.post.findMany({ include: { author: true } });
+  const posts = await prisma.post.findMany({
+    include: { author: true },
+    orderBy: { createdAt: "desc" },
+  });
 
   return res.status(200).json({
     status: "success",
