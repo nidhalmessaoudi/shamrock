@@ -14,6 +14,7 @@ import K from "@/K";
 import Sidebar from "@/components/Sidebar";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import truncateUsername from "@/helpers/truncateUsername";
+import Image from "next/image";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -84,19 +85,22 @@ export default function Home(
         </Sidebar>
         <Sidebar title="Sort">this is the sorting mechanism</Sidebar>
       </div>
-      <div className="m-24 flex flex-col items-center">
-        <h1 className="my-4">
-          {user?.username && `Hello ${user.username},`} Welcome to
-          shamrock.site!!
-        </h1>
-        <Button onClick={newPostOpenHandler}>New Post</Button>
-        {isLoading && <Spinner color="black" />}
-        {error && <p>Failed to load posts!</p>}
-        {data && renderPosts()}
+      <div className="mt-28 flex w-full flex-row items-center justify-center">
+        <div className="w-[42rem]">
+          <h2 className="mb-4 text-3xl font-bold">Home</h2>
+          <h1 className="my-4">
+            {user?.username && `Hello ${user.username},`} Welcome to
+            shamrock.site!!
+          </h1>
+          <Button onClick={newPostOpenHandler}>New Post</Button>
+          {isLoading && <Spinner color="black" />}
+          {error && <p>Failed to load posts!</p>}
+          {data && renderPosts()}
+        </div>
+        {showNewPostModal && (
+          <NewPost user={user} onClose={newPostModalCloseHandler} />
+        )}
       </div>
-      {showNewPostModal && (
-        <NewPost user={user} onClose={newPostModalCloseHandler} />
-      )}
     </HomePage>
   );
 }

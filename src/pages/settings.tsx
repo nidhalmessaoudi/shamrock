@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import TextField from "@/components/TextField";
 import { IUser } from "../../prisma/user";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
+import K from "@/K";
 
 export default function Settings(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -12,7 +13,7 @@ export default function Settings(
   const user = props.user as IUser;
 
   return (
-    <HomePage title="Account Settings | Pikri" user={user}>
+    <HomePage title={`Account Settings | ${K.BRAND}`} user={user}>
       <div className="mt-28 flex flex-row justify-center">
         <div className="w-3/5">
           <h1 className="text-3xl font-bold">Account Settings</h1>

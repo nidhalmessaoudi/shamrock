@@ -6,6 +6,7 @@ import formidable from "formidable";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
 import escapeHTML from "@/helpers/escapeHTML";
+import { Category } from "@prisma/client";
 
 export const config = {
   api: {
@@ -36,6 +37,11 @@ export default withIronSessionApiRoute(async function posts(
         status: err.status,
         message: err.message,
       });
+    } else {
+      return res.status(500).json({
+        status: "error",
+        message: "Something went wrong.",
+      });
     }
   }
 },
@@ -47,9 +53,17 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 
     const form = formidable();
 
-    form.parse(req, (err, data, files) => {
+    if (!userId) {
+      throw new AppError(
+        "You need to be authenticated to access this route.",
+        403,
+        "fail"
+      );
+    }
+
+    form.parse(req, async (err, data, files) => {
       let text = data.text as string;
-      let category = data.category as string;
+      let category = data.category as Category;
 
       if (!text || !text.trim()) {
         throw new AppError("The post text cannot be empty.", 400, "fail");
@@ -64,40 +78,21 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
       }
 
       if (!category || !K.POST_CATEGORIES.includes(category)) {
-        category = K.POST_CATEGORIES[0];
+        category = K.POST_CATEGORIES[0] as Category;
       }
 
       text = escapeHTML(text);
-    });
 
-    if (!userId) {
-      throw new AppError(
-        "You need to be authenticated to access this route.",
-        403,
-        "fail"
-      );
-    }
-
-    console.log(req.body);
-
-    const postText = req.body.text as string;
-
-    if (!postText && !(typeof postText === "string")) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Some required post fields are missing.",
+      const post = await prisma.post.create({
+        data: { text, category, authorId: userId },
       });
-    }
 
-    const post = await prisma.post.create({
-      data: { text: postText, authorId: userId },
-    });
-
-    return res.status(200).json({
-      status: "success",
-      data: {
-        post,
-      },
+      return res.status(200).json({
+        status: "success",
+        data: {
+          post,
+        },
+      });
     });
   } catch (err) {
     throw err;
