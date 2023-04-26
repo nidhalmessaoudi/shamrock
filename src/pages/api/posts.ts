@@ -7,12 +7,33 @@ import AppError from "@/helpers/AppError";
 import K from "@/K";
 import escapeHTML from "@/helpers/escapeHTML";
 import { Category } from "@prisma/client";
+import { PassThrough } from "stream";
+import s3Client from "../../../libs/s3/s3Client";
+import { Upload } from "@aws-sdk/lib-storage";
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
+
+function uploadImagesToS3(file: formidable.File) {
+  const pass = new PassThrough();
+
+  const imageUpload = new Upload({
+    client: s3Client,
+    params: {
+      Bucket: K.S3_IMAGES_BUCKET,
+      Body: pass,
+      Key: file.newFilename,
+      ContentType: file.mimetype || undefined,
+    },
+  });
+
+  imageUpload.done().then((data) => console.log(data));
+
+  return pass;
+}
 
 export default withIronSessionApiRoute(async function posts(
   req: NextApiRequest,
@@ -51,8 +72,6 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
   try {
     const userId = req.session.user?.id;
 
-    const form = formidable();
-
     if (!userId) {
       throw new AppError(
         "You need to be authenticated to access this route.",
@@ -61,38 +80,57 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    form.parse(req, async (err, data, files) => {
-      let text = data.text as string;
-      let category = data.category as Category;
+    const form = formidable({
+      maxFiles: K.IMAGE_MAX_LENGTH,
+      maxFileSize: K.IMAGE_MAX_SIZE,
+      // @ts-ignore
+      fileWriteStreamHandler: uploadImagesToS3,
+    });
 
-      if (!text || !text.trim()) {
-        throw new AppError("The post text cannot be empty.", 400, "fail");
-      }
+    const post = await new Promise((res, rej) => {
+      form.parse(req, async (err, data, files) => {
+        try {
+          if (err) {
+            throw err;
+          }
 
-      if (text.length > K.POST_MAX_LENGTH) {
-        throw new AppError(
-          `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
-          400,
-          "fail"
-        );
-      }
+          let text = data.text as string;
+          let category = data.category as Category;
 
-      if (!category || !K.POST_CATEGORIES.includes(category)) {
-        category = K.POST_CATEGORIES[0] as Category;
-      }
+          if (!text || !text.trim()) {
+            throw new AppError("The post text cannot be empty.", 400, "fail");
+          }
 
-      text = escapeHTML(text);
+          if (text.length > K.POST_MAX_LENGTH) {
+            throw new AppError(
+              `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
+              400,
+              "fail"
+            );
+          }
 
-      const post = await prisma.post.create({
-        data: { text, category, authorId: userId },
+          if (!category || !K.POST_CATEGORIES.includes(category)) {
+            category = K.POST_CATEGORIES[0] as Category;
+          }
+
+          text = escapeHTML(text);
+
+          const post = await prisma.post.create({
+            data: { text, category, authorId: userId },
+          });
+
+          res(post);
+        } catch (err) {
+          rej(err);
+        }
       });
+    });
 
-      return res.status(200).json({
-        status: "success",
-        data: {
-          post,
-        },
-      });
+    return res.status(200).json({
+      status: "success",
+      data: {
+        post,
+      },
     });
   } catch (err) {
     throw err;

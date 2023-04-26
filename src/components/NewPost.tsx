@@ -78,7 +78,7 @@ export default function NewPost(props: Props) {
     const selectedFiles = Array.from(imageInput.current.files || []);
     const filesLength = attachedImages.length + selectedFiles.length;
 
-    if (filesLength > 4) {
+    if (filesLength > K.IMAGE_MAX_LENGTH) {
       return alert("You cannot upload more than 4 images.");
     }
 
