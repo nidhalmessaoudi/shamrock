@@ -30,7 +30,7 @@ function uploadImagesToS3(file: formidable.File) {
     },
   });
 
-  imageUpload.done().then((data) => console.log(data));
+  imageUpload.done().then(() => {});
 
   return pass;
 }
@@ -88,42 +88,55 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
     });
 
     const post = await new Promise((res, rej) => {
-      form.parse(req, async (err, data, files) => {
-        try {
-          if (err) {
-            throw err;
+      try {
+        let text: string;
+        let category: Category;
+        const images: string[] = [];
+
+        form.parse(req);
+
+        form.on("field", (fieldName, fieldVal) => {
+          if (fieldName === "text") {
+            if (!fieldVal || !fieldVal.trim()) {
+              throw new AppError("The post text cannot be empty.", 400, "fail");
+            }
+
+            if (fieldVal.length > K.POST_MAX_LENGTH) {
+              throw new AppError(
+                `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
+                400,
+                "fail"
+              );
+            }
+
+            text = escapeHTML(fieldVal);
           }
 
-          let text = data.text as string;
-          let category = data.category as Category;
-
-          if (!text || !text.trim()) {
-            throw new AppError("The post text cannot be empty.", 400, "fail");
+          if (fieldName === "category") {
+            if (!fieldVal || !K.POST_CATEGORIES.includes(fieldVal)) {
+              category = K.POST_CATEGORIES[0] as Category;
+            }
           }
+        });
 
-          if (text.length > K.POST_MAX_LENGTH) {
-            throw new AppError(
-              `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
-              400,
-              "fail"
-            );
-          }
+        form.on("file", (_, file) => {
+          images.push(`${K.S3_IMAGES_URL}/${file.newFilename}`);
+        });
 
-          if (!category || !K.POST_CATEGORIES.includes(category)) {
-            category = K.POST_CATEGORIES[0] as Category;
-          }
+        form.on("end", () => {
+          prisma.post
+            .create({
+              data: { text, category, authorId: userId, images },
+            })
+            .then((post) => res(post));
+        });
 
-          text = escapeHTML(text);
-
-          const post = await prisma.post.create({
-            data: { text, category, authorId: userId },
-          });
-
-          res(post);
-        } catch (err) {
-          rej(err);
-        }
-      });
+        form.on("error", (err) => {
+          throw err;
+        });
+      } catch (err) {
+        rej(err);
+      }
     });
 
     return res.status(200).json({
