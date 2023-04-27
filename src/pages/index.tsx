@@ -3,7 +3,7 @@ import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import HomePage from "@/components/HomePage";
 import { IUser } from "../../prisma/user";
 import Button from "@/components/Button";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import NewPost from "@/components/NewPost";
 import useSWR, { Fetcher } from "swr";
 import axios from "axios";
@@ -52,6 +52,8 @@ export default function Home(
     "cardamom",
   ];
 
+  function sortChangeHandler(e: ChangeEvent<HTMLDivElement>) {}
+
   return (
     <HomePage title={K.BRAND} user={user}>
       <div className="fixed right-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
@@ -80,24 +82,51 @@ export default function Home(
         </footer>
       </div>
       <div className="fixed left-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
+        <Sidebar title="Sort By" className="mb-16">
+          <div className="px-6" onChange={sortChangeHandler}>
+            <div>
+              <label htmlFor="recent">Recent</label>
+              <input type="radio" id="recent" />
+            </div>
+            <div>
+              <label htmlFor="topRated">Top Rated</label>
+              <input type="radio" id="topRated" />
+            </div>
+            <div>
+              <label htmlFor="following">Following</label>
+              <input type="radio" id="following" />
+            </div>
+          </div>
+        </Sidebar>
         <Sidebar title="Categories" className="mb-16">
           this is categories
         </Sidebar>
-        <Sidebar title="Sort">this is the sorting mechanism</Sidebar>
+        <NewPostButton handler={newPostOpenHandler} />
       </div>
       <div className="mt-28 flex w-full flex-row items-center justify-center">
         <div className="w-[42rem]">
-          <h2 className="mb-4 text-3xl font-bold">Home</h2>
+          <div className="mb-4 flex flex-row items-center justify-between">
+            <h2 className="text-3xl font-bold">Home</h2>
+            <NewPostButton handler={newPostOpenHandler} />
+          </div>
           {isLoading && <Spinner color="black" />}
           {error && <p>Failed to load posts!</p>}
           {data && renderPosts()}
-          <Button onClick={newPostOpenHandler}>New Post</Button>
         </div>
         {showNewPostModal && (
           <NewPost user={user} onClose={newPostModalCloseHandler} />
         )}
       </div>
     </HomePage>
+  );
+}
+
+function NewPostButton(props: { handler: () => void }) {
+  return (
+    <Button onClick={props.handler}>
+      <i className="bi bi-pencil-square mr-2 text-xl"></i>
+      <span>New Post</span>
+    </Button>
   );
 }
 
