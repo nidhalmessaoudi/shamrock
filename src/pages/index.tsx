@@ -40,7 +40,7 @@ export default function Home(
   console.log(data, error, isLoading);
 
   function renderPosts() {
-    return data?.map((post) => <Post data={post} key={post.id} />);
+    return data?.map((post) => <Post data={post} user={user} key={post.id} />);
   }
 
   const DUMMY_USERNAMES = [

@@ -123,7 +123,7 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
           images.push(`${K.S3_IMAGES_URL}/${file.newFilename}`);
         });
 
-        form.on("end", () => {
+        form.once("end", () => {
           prisma.post
             .create({
               data: { text, category, authorId: userId, images },
@@ -139,7 +139,7 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
       }
     });
 
-    return res.status(200).json({
+    return res.status(201).json({
       status: "success",
       data: {
         post,
@@ -152,7 +152,7 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 
 async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   const posts = await prisma.post.findMany({
-    include: { author: true },
+    include: { author: true, likes: true },
     orderBy: { createdAt: "desc" },
   });
 

@@ -2,13 +2,87 @@ import moment from "moment";
 import { IPost } from "../../prisma/post";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import Image from "next/image";
+import { LikeType } from "@prisma/client";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { useState } from "react";
+import { IUser } from "../../prisma/user";
 
 interface Props {
   data: IPost;
+  user: IUser;
 }
 
 export default function Post(props: Props) {
   const post = props.data;
+
+  const userReact = post.likes.find((like) => like.userId === props.user.id);
+
+  const [reactions, setReactions] = useState({
+    likes: post.likes.filter((like) => like.type === "LIKE").length,
+    dislikes: post.likes.filter((like) => like.type === "DISLIKE").length,
+    userReaction: userReact?.type,
+  });
+
+  const likeMutation = useMutation((type: LikeType) => {
+    const like = {
+      type,
+      postId: post.id,
+    };
+
+    return axios.post("/api/likes", like);
+  });
+
+  function likeHandler(likeType: LikeType) {
+    if (likeMutation.isLoading) {
+      return;
+    }
+
+    return () => {
+      likeMutation.mutate(likeType);
+
+      setReactions((oldReactions) => {
+        let userReaction: LikeType | undefined;
+        let likes = oldReactions.likes;
+        let dislikes = oldReactions.dislikes;
+
+        switch (oldReactions.userReaction) {
+          case "LIKE":
+            likes -= 1;
+            if (likeType === "DISLIKE") {
+              userReaction = "DISLIKE";
+              dislikes += 1;
+            } else {
+              userReaction = undefined;
+            }
+            break;
+          case "DISLIKE":
+            dislikes -= 1;
+            if (likeType === "LIKE") {
+              userReaction = "LIKE";
+              likes += 1;
+            } else {
+              userReaction = undefined;
+            }
+            break;
+          default:
+            userReaction = likeType;
+            if (likeType === "LIKE") {
+              likes += 1;
+            } else {
+              dislikes += 1;
+            }
+            break;
+        }
+
+        return {
+          userReaction,
+          likes,
+          dislikes,
+        };
+      });
+    };
+  }
 
   function renderImages() {
     return post.images.map((image, i, arr) => {
@@ -54,21 +128,27 @@ export default function Post(props: Props) {
           {renderImages()}
         </div>
       )}
-      <div className="mx-2 mt-2 flex flex-row items-center justify-between gap-x-2 border-t border-gray-200 pt-4">
-        <div className="flex items-center gap-x-2">
+      <div className="mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 border-t border-gray-200 px-24 pt-4">
+        <div
+          className="flex items-center gap-x-2"
+          onClick={likeHandler("LIKE")}
+        >
           <i className="bi bi-hand-thumbs-up text-xl"></i>
-          <span>Like</span>
+          <span>{reactions.likes}</span>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div
+          className="flex items-center gap-x-2"
+          onClick={likeHandler("DISLIKE")}
+        >
           <i className="bi bi-hand-thumbs-down text-xl"></i>
-          <span>Dislike</span>
+          <span>{reactions.dislikes}</span>
         </div>
         <div className="flex items-center gap-x-2">
           <i className="bi bi-chat text-xl"></i>
-          <span>Comment</span>
+          <span>0</span>
         </div>
         <div className="flex items-center gap-x-2">
-          <i className="bi bi-link text-xl"></i>
+          <i className="bi bi-link-45deg text-xl"></i>
           <span>Copy Link</span>
         </div>
       </div>
