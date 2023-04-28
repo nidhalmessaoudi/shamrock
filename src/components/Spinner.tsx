@@ -3,16 +3,9 @@ interface Props {
 }
 
 export default function Spinner(props: Props) {
-  const colorVariants = {
-    white: "text-white",
-    black: "text-black",
-  };
-
   return (
     <svg
-      className={`-ml-1 mr-3 h-5 w-5 animate-spin ${
-        colorVariants[props.color || "white"]
-      }`}
+      className="-ml-1 mr-3 h-5 w-5 animate-spin"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

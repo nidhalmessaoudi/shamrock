@@ -109,10 +109,10 @@ export default function NewPost(props: Props) {
       onClick={overlayClickHandler}
     >
       <div
-        className="new-post relative z-40 my-auto h-[30rem] w-2/5 overflow-hidden rounded-xl bg-white"
+        className="new-post relative z-40 my-auto h-[30rem] w-2/5 overflow-hidden rounded-xl bg-white dark:bg-slate-800"
         tabIndex={0}
       >
-        <div className="absolute left-0 top-0 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 bg-white px-6 py-4">
+        <div className="absolute left-0 top-0 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 bg-inherit px-6 py-4 dark:border-slate-500">
           <h2 className="text-2xl font-bold">New Post</h2>
           <i
             className="bi bi-x-lg cursor-pointer text-2xl"
@@ -123,11 +123,11 @@ export default function NewPost(props: Props) {
           <DefaultProfilePicture className="w-[8%]" />
           <div className="flex w-[90%] flex-col px-2">
             <div className="relative mb-4 w-fit">
-              <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-green-blue"></i>
+              <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-green-blue dark:text-light-green"></i>
               <select
                 onChange={categoryChangeHandler}
                 title="Category"
-                className="w-28 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-green-blue focus:shadow-lg focus:outline-none"
+                className="w-28 select-none appearance-none rounded-xl border border-solid border-gray-200 bg-white px-3 py-1 text-sm text-green-blue focus:shadow-lg focus:outline-none dark:border-slate-500 dark:bg-slate-700 dark:text-light-green"
               >
                 {K.POST_CATEGORIES.map((category, i) => (
                   <option key={i} value={category}>
@@ -139,7 +139,7 @@ export default function NewPost(props: Props) {
             <textarea
               value={val}
               onChange={textChangeHandler}
-              className="h-36 resize-none overflow-auto p-2 focus:outline-none"
+              className="h-36 resize-none overflow-auto bg-inherit p-2 focus:outline-none"
               autoFocus={true}
               placeholder="Type anything you want here..."
             />
@@ -148,14 +148,14 @@ export default function NewPost(props: Props) {
         {attachedImages.length > 0 && (
           <div className="px-6">
             <div
-              className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-2 border-t border-solid border-gray-200 px-2 py-4"
+              className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-2 border-t border-solid border-gray-200 px-2 py-4 dark:border-slate-500"
               onClick={removeImageHandler}
             >
               {attachedImages.map((img, i) => {
                 return (
                   <div
                     key={i}
-                    className="flex w-[49%] flex-row items-center justify-between rounded-xl bg-green-blue/60 px-3 py-1 text-white"
+                    className="flex w-[49%] flex-row items-center justify-between rounded-xl bg-green-blue/60 px-3 py-1 text-white dark:bg-light-green/60"
                     title={img.name}
                   >
                     <span className="truncate">{img.name}</span>
@@ -169,12 +169,12 @@ export default function NewPost(props: Props) {
             </div>
           </div>
         )}
-        <div className="absolute bottom-0 left-0 z-40 w-full bg-white px-6">
-          <div className="flex items-center justify-between border-t border-solid border-gray-200 px-2 py-4">
+        <div className="absolute bottom-0 left-0 z-40 w-full bg-inherit px-6">
+          <div className="flex items-center justify-between border-t border-solid border-gray-200 px-2 py-4 dark:border-slate-500">
             <button
               onClick={fireAttachHandler}
               title="Attach Images"
-              className="flex flex-row items-center justify-center rounded-xl border border-green-blue px-3 py-2 text-sm text-green-blue transition-colors hover:bg-green-blue/10 focus:shadow-lg focus:outline-none"
+              className="flex flex-row items-center justify-center rounded-xl border border-green-blue px-3 py-2 text-sm text-green-blue transition-colors hover:bg-green-blue/10 focus:shadow-lg focus:outline-none dark:border-light-green dark:text-light-green"
             >
               <i className="bi bi-card-image mr-2 text-base"></i>
               <span>Images</span>
