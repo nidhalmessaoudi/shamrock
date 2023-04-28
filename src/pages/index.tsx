@@ -15,6 +15,12 @@ import Sidebar from "@/components/Sidebar";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import truncateUsername from "@/helpers/truncateUsername";
 import RadioButton from "@/components/RadioButton";
+import SoccerIcon from "@/components/categoriesIcons/SoccerIcon";
+import NBAIcon from "@/components/categoriesIcons/NBAIcon";
+import NFLIcon from "@/components/categoriesIcons/NFLIcon";
+import NHLIcon from "@/components/categoriesIcons/NHLIcon";
+import MLBIcon from "@/components/categoriesIcons/MLBIcon";
+import UFCIcon from "@/components/categoriesIcons/UFCIcon";
 
 export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -39,20 +45,37 @@ export default function Home(
     setShowNewPostModal(false);
   }
 
-  console.log(data, error, isLoading);
-
   function renderPosts() {
     return data?.map((post) => <Post data={post} user={user} key={post.id} />);
   }
 
-  const DUMMY_USERNAMES = [
-    "division_bell0000",
-    "david___gilmour_ftwww",
-    "bunch",
-    "heavily",
-    "present",
-    "cardamom",
-  ];
+  function renderFollowing() {
+    const DUMMY_USERNAMES = [
+      "division_bell0000",
+      "david___gilmour_ftwww",
+      "bunch",
+      "heavily",
+      "present",
+      "cardamom",
+    ];
+
+    return (
+      <>
+        {DUMMY_USERNAMES.map((username, i) => (
+          <div
+            key={i}
+            className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200"
+            title={username}
+          >
+            <DefaultProfilePicture className="w-14" />
+            <span className="ml-2 font-bold hover:underline">
+              {truncateUsername(username)}
+            </span>
+          </div>
+        ))}
+      </>
+    );
+  }
 
   function renderSortOptions() {
     const sortOptions = ["Recent", "Top Rated", "Following"];
@@ -94,24 +117,47 @@ export default function Home(
     setSortOption(sortVal);
   }
 
+  function renderCategories() {
+    const iconsComponents = {
+      SoccerIcon,
+      NBAIcon,
+      NFLIcon,
+      NHLIcon,
+      UFCIcon,
+      MLBIcon,
+    };
+
+    return (
+      <>
+        {K.POST_CATEGORIES.filter((category) => category !== "All").map(
+          (category, i) => {
+            const Icon =
+              iconsComponents[
+                `${category}Icon` as keyof typeof iconsComponents
+              ];
+
+            return (
+              <div
+                key={i}
+                className="flex cursor-pointer select-none flex-row items-center rounded-xl p-4 transition-colors hover:bg-gray-200"
+              >
+                <Icon />
+                <span className="ml-4 font-bold hover:underline">
+                  {category} Group
+                </span>
+              </div>
+            );
+          }
+        )}
+      </>
+    );
+  }
+
   return (
     <HomePage title={K.BRAND} user={user}>
       <div className="fixed right-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
-        <Sidebar title="Following" className="mb-4">
-          <div className="px-1">
-            {DUMMY_USERNAMES.map((username, i) => (
-              <div
-                key={i}
-                className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200"
-                title={username}
-              >
-                <DefaultProfilePicture className="w-14" />
-                <span className="ml-2 font-bold hover:underline">
-                  {truncateUsername(username)}
-                </span>
-              </div>
-            ))}
-          </div>
+        <Sidebar title="Following" className="mb-6">
+          <div className="px-1 pb-1">{renderFollowing()}</div>
         </Sidebar>
         <footer className="flex w-[24rem] flex-row flex-wrap items-center gap-x-4 gap-y-2 break-words px-6 text-sm text-black/70">
           <p>Terms of service</p>
@@ -122,13 +168,13 @@ export default function Home(
         </footer>
       </div>
       <div className="fixed left-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
-        <Sidebar title="Sort By" className="mb-16">
-          <div className="px-1 pb-2" onClick={sortClickHandler}>
+        <Sidebar title="Sort By" className="mb-6">
+          <div className="px-1 pb-1" onClick={sortClickHandler}>
             {renderSortOptions()}
           </div>
         </Sidebar>
-        <Sidebar title="Categories" className="mb-16">
-          this is categories
+        <Sidebar title="Categories" className="mb-6">
+          <div className="px-1 pb-1">{renderCategories()}</div>
         </Sidebar>
         <NewPostButton handler={newPostOpenHandler} />
       </div>

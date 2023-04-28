@@ -110,7 +110,7 @@ export default function Post(props: Props) {
   }
 
   return (
-    <div className="mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white p-4">
+    <div className="mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white px-4 pt-4">
       <div className="flex flex-row items-center">
         <DefaultProfilePicture className="w-16" />
         <div className="ml-2 flex flex-col">
@@ -128,26 +128,48 @@ export default function Post(props: Props) {
           {renderImages()}
         </div>
       )}
-      <div className="mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 border-t border-gray-200 px-24 pt-4">
+      <div className="mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 border-t border-gray-200 px-24 py-1">
         <div
-          className="flex items-center gap-x-2"
+          className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue"
           onClick={likeHandler("LIKE")}
         >
-          <i className="bi bi-hand-thumbs-up text-xl"></i>
-          <span>{reactions.likes}</span>
+          <i
+            className={`bi bi-hand-thumbs-up${
+              reactions.userReaction === "LIKE" ? "-fill text-green-blue" : ""
+            } text-xl`}
+          ></i>
+          <span
+            className={
+              reactions.userReaction === "LIKE" ? "text-green-blue" : ""
+            }
+          >
+            {reactions.likes}
+          </span>
         </div>
         <div
-          className="flex items-center gap-x-2"
+          className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue"
           onClick={likeHandler("DISLIKE")}
         >
-          <i className="bi bi-hand-thumbs-down text-xl"></i>
-          <span>{reactions.dislikes}</span>
+          <i
+            className={`bi bi-hand-thumbs-down${
+              reactions.userReaction === "DISLIKE"
+                ? "-fill text-green-blue"
+                : ""
+            } text-xl`}
+          ></i>
+          <span
+            className={
+              reactions.userReaction === "DISLIKE" ? "text-green-blue" : ""
+            }
+          >
+            {reactions.dislikes}
+          </span>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue">
           <i className="bi bi-chat text-xl"></i>
           <span>0</span>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue">
           <i className="bi bi-link-45deg text-xl"></i>
           <span>Copy Link</span>
         </div>
