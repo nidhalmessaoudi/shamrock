@@ -5,7 +5,7 @@ import { IUser } from "../../prisma/user";
 import Button from "@/components/Button";
 import { MouseEvent, useState } from "react";
 import NewPost from "@/components/NewPost";
-import useSWR, { Fetcher } from "swr";
+import useSWR, { Fetcher, useSWRConfig } from "swr";
 import axios from "axios";
 import { IPost } from "../../prisma/post";
 import Post from "../components/Post";
@@ -34,6 +34,7 @@ export default function Home(
   const SWRFetcher: Fetcher<IPost[], string> = (url) =>
     axios.get(url).then((res) => res.data.data.posts);
   const { data, error, isLoading } = useSWR("/api/posts", SWRFetcher);
+  const { mutate } = useSWRConfig();
 
   function newPostOpenHandler() {
     document.body.classList.add("overflow-hidden");
@@ -43,6 +44,7 @@ export default function Home(
   function newPostModalCloseHandler() {
     document.body.classList.remove("overflow-hidden");
     setShowNewPostModal(false);
+    mutate("/api/posts");
   }
 
   function renderPosts() {
@@ -184,9 +186,11 @@ export default function Home(
             <h2 className="text-3xl font-bold">Home</h2>
             <NewPostButton handler={newPostOpenHandler} />
           </div>
-          {isLoading && <Spinner color="black" />}
-          {error && <p>Failed to load posts!</p>}
           {data && renderPosts()}
+          <div className="my-8 flex flex-row items-center justify-center">
+            {isLoading && <Spinner color="black" />}
+            {error && <p>Failed to load posts!</p>}
+          </div>
         </div>
         {showNewPostModal && (
           <NewPost user={user} onClose={newPostModalCloseHandler} />

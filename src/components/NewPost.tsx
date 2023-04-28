@@ -18,17 +18,24 @@ export default function NewPost(props: Props) {
   const imageInput = useRef<HTMLInputElement>(null);
   const [attachedImages, setAttachedImages] = useState<File[]>([]);
 
-  const postMutation = useMutation(() => {
-    const post = {
-      text: val,
-      category,
-      images: attachedImages,
-    };
+  const postMutation = useMutation(
+    () => {
+      const post = {
+        text: val,
+        category,
+        images: attachedImages,
+      };
 
-    return axios.post("/api/posts", post, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-  });
+      return axios.post("/api/posts", post, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    {
+      onSuccess: () => {
+        props.onClose();
+      },
+    }
+  );
 
   useEffect(() => {
     function escapePressHandler(e: KeyboardEvent) {

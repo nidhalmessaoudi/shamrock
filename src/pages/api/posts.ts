@@ -115,6 +115,8 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
           if (fieldName === "category") {
             if (!fieldVal || !K.POST_CATEGORIES.includes(fieldVal)) {
               category = K.POST_CATEGORIES[0] as Category;
+            } else {
+              category = fieldVal as Category;
             }
           }
         });
