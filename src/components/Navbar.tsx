@@ -1,12 +1,14 @@
 import Image from "next/image";
 
 import logoBlack from "../../public/brand/logoBlack.png";
+import logoWhite from "../../public/brand/logoWhite.png";
 import Link from "next/link";
 import NavbarDropdown from "./NavbarDropdown";
 import { useEffect, useState, MouseEvent } from "react";
 import { IUser } from "../../prisma/user";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import truncateUsername from "@/helpers/truncateUsername";
+import { useTheme } from "next-themes";
 
 interface Props {
   user: IUser;
@@ -14,6 +16,14 @@ interface Props {
 
 export default function Navbar(props: Props) {
   const [showNavbarDropdown, setShowNavbarDropdown] = useState(false);
+
+  const { systemTheme, theme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!showNavbarDropdown) {
@@ -37,15 +47,17 @@ export default function Navbar(props: Props) {
   }
 
   return (
-    <nav className="fixed left-0 top-0 z-10 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4 backdrop-blur-md">
+    <nav className="fixed left-0 top-0 z-10 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4 backdrop-blur-md dark:border-slate-500 dark:text-white">
       <Link href="/" shallow={true} className="flex flex-row items-center">
-        <Image
-          src={logoBlack}
-          alt="Shamrock Logo"
-          width={32}
-          className="object-contain"
-        />
-        <h3 className="ml-2 bg-gradient-to-r from-black to-light-green bg-clip-text text-2xl font-bold uppercase text-transparent">
+        {mounted && (
+          <Image
+            src={currentTheme === "dark" ? logoWhite : logoBlack}
+            alt="Shamrock Logo"
+            width={32}
+            className="object-contain"
+          />
+        )}
+        <h3 className="ml-2 bg-gradient-to-r from-black to-light-green bg-clip-text text-2xl font-bold uppercase text-transparent dark:from-light-green dark:to-green-blue">
           Shamrock
         </h3>
       </Link>

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import Head from "./Head";
 import Navbar from "./Navbar";
 import { IUser } from "../../prisma/user";

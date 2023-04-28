@@ -15,7 +15,8 @@ export default function TextField(props: Props) {
 
   const colorVariants = {
     white: "bg-white/10 focus:ring-white/50 disabled:bg-white/20",
-    black: "bg-black/5 focus:ring-green-blue/70 disabled:bg-black/10",
+    black:
+      "bg-black/5 focus:ring-green-blue/70 disabled:bg-black/10 dark:bg-slate-600 dark:focus:ring-light-green/50 dark:disabled:bg-slate-700 dark:disabled:text-white/50",
   };
 
   const input = (

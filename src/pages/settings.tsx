@@ -17,10 +17,10 @@ export default function Settings(
       <div className="mt-28 flex flex-row justify-center">
         <div className="w-3/5">
           <h1 className="text-3xl font-bold">Account Settings</h1>
-          <p className="mt-2 text-sm text-black/70">
+          <p className="mt-2 text-sm text-black/70 dark:text-slate-400">
             Here you can manage your account credentials.
           </p>
-          <div className="mx-auto my-8 w-3/4 rounded-xl border border-gray-200 px-12 py-8">
+          <div className="mx-auto my-8 w-3/4 rounded-xl border border-gray-200 px-12 py-8 dark:border-slate-500">
             <div className="flex flex-row items-center">
               <DefaultProfilePicture className="mr-3 w-[120px]" />
               <Button className="mr-4">Upload New Picture</Button>

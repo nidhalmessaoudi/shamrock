@@ -64,7 +64,7 @@ export default function Home(
         {DUMMY_USERNAMES.map((username, i) => (
           <div
             key={i}
-            className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200"
+            className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600"
             title={username}
           >
             <DefaultProfilePicture className="w-14" />
@@ -85,13 +85,13 @@ export default function Home(
         {sortOptions.map((option, i) => (
           <div
             key={i}
-            className="sort-option flex cursor-pointer select-none flex-row items-center justify-between rounded-xl px-5 py-4 transition-colors hover:bg-gray-200"
+            className="sort-option flex cursor-pointer select-none flex-row items-center justify-between rounded-xl px-5 py-4 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600"
             data-val={option}
           >
             <label
               className={`cursor-pointer ${
                 sortOption === option
-                  ? "border-b-2 border-green-blue font-bold"
+                  ? "border-b-2 border-green-blue font-bold dark:border-light-green"
                   : ""
               }`}
             >
@@ -139,7 +139,7 @@ export default function Home(
             return (
               <div
                 key={i}
-                className="flex cursor-pointer select-none flex-row items-center rounded-xl p-4 transition-colors hover:bg-gray-200"
+                className="flex cursor-pointer select-none flex-row items-center rounded-xl p-4 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600"
               >
                 <Icon />
                 <span className="ml-4 font-bold hover:underline">
@@ -159,7 +159,7 @@ export default function Home(
         <Sidebar title="Following" className="mb-6">
           <div className="px-1 pb-1">{renderFollowing()}</div>
         </Sidebar>
-        <footer className="flex w-[24rem] flex-row flex-wrap items-center gap-x-4 gap-y-2 break-words px-6 text-sm text-black/70">
+        <footer className="flex w-[24rem] flex-row flex-wrap items-center gap-x-4 gap-y-2 break-words px-6 text-sm text-black/70 dark:text-slate-400">
           <p>Terms of service</p>
           <p>Privacy Policy</p>
           <p>
