@@ -124,8 +124,8 @@ export default function Post(props: Props) {
   }
 
   return (
-    <div
-      className={`mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white px-4 pt-4 transition-colors dark:border-slate-500 dark:bg-slate-800 ${
+    <article
+      className={`mb-8 h-fit w-full rounded-xl border border-gray-200 px-4 pt-4 transition-colors dark:border-slate-500 ${
         !props.fullPage
           ? "cursor-pointer hover:bg-gray-200/20 dark:hover:bg-slate-700/20"
           : ""
@@ -201,6 +201,6 @@ export default function Post(props: Props) {
           <span>Copy Link</span>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

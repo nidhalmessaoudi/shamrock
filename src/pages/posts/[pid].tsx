@@ -15,7 +15,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
 
   const router = useRouter();
 
-  function newPostModalCloseHandler() {
+  function goToHomePage() {
     router.push("/");
   }
 
@@ -23,8 +23,15 @@ export default function PostPage(props: { [key: string]: unknown }) {
     <HomePage
       user={user}
       title={`${post.author.username} Post | ${K.BRAND}`}
-      onNewPostModalClose={newPostModalCloseHandler}
+      onNewPostModalClose={goToHomePage}
     >
+      <div
+        className="mb-4 flex w-fit cursor-pointer flex-row items-center hover:underline"
+        onClick={goToHomePage}
+      >
+        <i className="bi bi-chevron-left mr-1 text-2xl"></i>
+        <span className="text-xl">Home</span>
+      </div>
       <Post data={post} user={user} fullPage={true} />
     </HomePage>
   );
