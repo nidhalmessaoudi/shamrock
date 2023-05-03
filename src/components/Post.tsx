@@ -125,9 +125,9 @@ export default function Post(props: Props) {
 
   return (
     <article
-      className={`mb-8 h-fit w-full rounded-xl border border-gray-200 px-4 pt-4 transition-colors dark:border-slate-500 ${
+      className={`mb-8 h-fit w-full transition-colors dark:border-slate-500 ${
         !props.fullPage
-          ? "cursor-pointer hover:bg-gray-200/20 dark:hover:bg-slate-700/20"
+          ? "cursor-pointer rounded-xl border border-gray-200 px-4 pt-4 hover:bg-gray-200/20 dark:hover:bg-slate-700/20"
           : ""
       }`}
       onClick={postClickHandler}
@@ -149,7 +149,11 @@ export default function Post(props: Props) {
           {renderImages()}
         </div>
       )}
-      <div className="mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 border-t border-gray-200 px-24 py-1 dark:border-slate-500">
+      <div
+        className={`mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 ${
+          !props.fullPage ? "border-t" : "border-y"
+        } border-gray-200 px-24 py-1 dark:border-slate-500`}
+      >
         <div
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
           onClick={likeHandler("LIKE")}
