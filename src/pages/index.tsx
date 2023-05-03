@@ -2,7 +2,6 @@ import { InferGetServerSidePropsType } from "next";
 import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import HomePage from "@/components/HomePage";
 import { IUser } from "../../prisma/user";
-import Button from "@/components/Button";
 import { useState } from "react";
 import NewPost from "@/components/NewPost";
 import useSWR, { Fetcher, useSWRConfig } from "swr";
@@ -46,11 +45,11 @@ export default function Home(
 
   return (
     <HomePage title={K.BRAND} user={user}>
-      <div className="fixed right-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
+      <div className="fixed right-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
         <FollowingSidebar />
         <Footer />
       </div>
-      <div className="fixed left-[12rem] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
+      <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
         <SortSidebar />
         <CategoriesSidebar />
         <NewPostButton handler={newPostOpenHandler} />

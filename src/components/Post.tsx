@@ -102,7 +102,7 @@ export default function Post(props: Props) {
             alt={`Image posted by ${post.author.username}`}
             width={4000}
             height={10}
-            className={`h-full w-full object-fill`}
+            className={`h-full max-h-[42rem] w-full object-cover`}
           />
         </a>
       );
