@@ -2,35 +2,50 @@ import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../../libs/auth/session";
 import prisma from "../../prisma/prisma";
 import { IUser } from "../../prisma/user";
+import { GetServerSidePropsContext } from "next";
 
-const getHomeSSRProps = withIronSessionSsr(async function getServerSideProps({
-  req,
-}) {
-  const userSession = req.session.user;
-  let user = null;
+const getHomeSSRProps = (
+  cb?: (ctx: GetServerSidePropsContext) => Promise<{ [key: string]: unknown }>
+) => {
+  return withIronSessionSsr(async function getServerSideProps(ctx) {
+    const userSession = ctx.req.session.user;
+    let user = null;
 
-  if (userSession) {
-    user = (await prisma.user.findUnique({
-      where: { id: userSession.id },
-    })) as IUser;
-  }
+    if (userSession) {
+      user = (await prisma.user.findUnique({
+        where: { id: userSession.id },
+      })) as IUser;
+    }
 
-  if (user) {
-    delete user.password;
-    return {
-      props: {
-        user: JSON.parse(JSON.stringify(user)),
-      },
-    };
-  } else {
-    return {
-      redirect: {
-        destination: "/signin",
-        permanent: false,
-      },
-    };
-  }
-},
-sessionOptions);
+    if (user) {
+      delete user.password;
+
+      let additionalProps = null;
+      if (cb) {
+        additionalProps = await cb(ctx);
+
+        if (additionalProps.notFound) {
+          return { notFound: true };
+        }
+      }
+
+      return {
+        props: JSON.parse(
+          JSON.stringify({
+            user,
+            ...additionalProps,
+          })
+        ),
+      };
+    } else {
+      return {
+        redirect: {
+          destination: "/signin",
+          permanent: false,
+        },
+      };
+    }
+  }, sessionOptions);
+};
 
 export default getHomeSSRProps;

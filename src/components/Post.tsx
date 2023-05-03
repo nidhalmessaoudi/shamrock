@@ -5,18 +5,22 @@ import Image from "next/image";
 import { LikeType } from "@prisma/client";
 import { useMutation } from "react-query";
 import axios from "axios";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { IUser } from "../../prisma/user";
+import { useRouter } from "next/router";
 
 interface Props {
   data: IPost;
   user: IUser;
+  fullPage: boolean;
 }
 
 export default function Post(props: Props) {
   const post = props.data;
 
   const userReact = post.likes.find((like) => like.userId === props.user.id);
+
+  const router = useRouter();
 
   const [reactions, setReactions] = useState({
     likes: post.likes.filter((like) => like.type === "LIKE").length,
@@ -38,7 +42,7 @@ export default function Post(props: Props) {
       return;
     }
 
-    return () => {
+    return (e: MouseEvent) => {
       likeMutation.mutate(likeType);
 
       setReactions((oldReactions) => {
@@ -81,6 +85,8 @@ export default function Post(props: Props) {
           dislikes,
         };
       });
+
+      e.stopPropagation();
     };
   }
 
@@ -109,8 +115,23 @@ export default function Post(props: Props) {
     });
   }
 
+  function postClickHandler() {
+    if (props.fullPage) {
+      return;
+    }
+
+    router.push(`/posts/${post.id}`);
+  }
+
   return (
-    <div className="mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white px-4 pt-4 dark:border-slate-500 dark:bg-slate-800">
+    <div
+      className={`mb-8 h-fit w-full rounded-xl border border-gray-200 bg-white px-4 pt-4 transition-colors dark:border-slate-500 dark:bg-slate-800 ${
+        !props.fullPage
+          ? "cursor-pointer hover:bg-gray-200/20 dark:hover:bg-slate-700/20"
+          : ""
+      }`}
+      onClick={postClickHandler}
+    >
       <div className="flex flex-row items-center">
         <DefaultProfilePicture className="w-16" />
         <div className="ml-2 flex flex-col">
@@ -124,7 +145,7 @@ export default function Post(props: Props) {
       </div>
       <p className="whitespace-pre-wrap p-2">{post.text}</p>
       {post.images.length > 0 && (
-        <div className="relative mx-2 mb-4 mt-1 flex flex-row flex-wrap justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-slate-500">
+        <div className="relative mx-2 mb-4 mt-1 flex max-h-[42rem] select-none flex-row flex-wrap justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-slate-500">
           {renderImages()}
         </div>
       )}

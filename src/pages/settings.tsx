@@ -7,9 +7,7 @@ import { IUser } from "../../prisma/user";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import K from "@/K";
 
-export default function Settings(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) {
+export default function Settings(props: { [key: string]: unknown }) {
   const user = props.user as IUser;
 
   return (
@@ -62,4 +60,4 @@ export default function Settings(
   );
 }
 
-export const getServerSideProps = getHomeSSRProps;
+export const getServerSideProps = getHomeSSRProps();
