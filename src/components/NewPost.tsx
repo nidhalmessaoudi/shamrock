@@ -127,7 +127,7 @@ export default function NewPost(props: Props) {
           ></i>
         </div>
         <div className="mt-20 flex flex-row items-start justify-between px-6">
-          <DefaultProfilePicture className="w-[8%]" />
+          <DefaultProfilePicture className="w-16" />
           <div className="flex w-[90%] flex-col px-2">
             <div className="relative mb-4 w-fit">
               <i className="bi bi-chevron-down pointer-events-none absolute right-0 top-0 z-10 mr-3 mt-1 text-green-blue dark:text-light-green"></i>

@@ -49,7 +49,7 @@ export default function Home(props: { [key: string]: unknown }) {
       {data && renderPosts()}
       <div className="my-8 flex flex-row items-center justify-center">
         {isLoading && <Spinner color="black" />}
-        {error && <p>Failed to load posts!</p>}
+        {!isLoading && error && <p>Failed to load posts!</p>}
       </div>
     </HomePage>
   );

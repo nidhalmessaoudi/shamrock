@@ -1,14 +1,14 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
-import { sessionOptions } from "../../../libs/auth/session";
-import prisma from "../../../prisma/prisma";
+import { sessionOptions } from "@/../libs/auth/session";
+import prisma from "@/../prisma/prisma";
 import formidable from "formidable";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
 import escapeHTML from "@/helpers/escapeHTML";
 import { Category } from "@prisma/client";
 import { PassThrough } from "stream";
-import s3Client from "../../../libs/s3/s3Client";
+import s3Client from "@/../../libs/s3/s3Client";
 import { Upload } from "@aws-sdk/lib-storage";
 
 export const config = {
@@ -153,15 +153,19 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function getPosts(req: NextApiRequest, res: NextApiResponse) {
-  const posts = await prisma.post.findMany({
-    include: { author: true, likes: true },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const posts = await prisma.post.findMany({
+      include: { author: true, likes: true },
+      orderBy: { createdAt: "desc" },
+    });
 
-  return res.status(200).json({
-    status: "success",
-    data: {
-      posts,
-    },
-  });
+    return res.status(200).json({
+      status: "success",
+      data: {
+        posts,
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
 }

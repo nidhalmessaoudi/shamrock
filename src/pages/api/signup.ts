@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createUser } from "../../../prisma/user";
+import { createUser } from "@/../prisma/user";
 import { withIronSessionApiRoute } from "iron-session/next";
-import { createUserSession, sessionOptions } from "../../../libs/auth/session";
+import { createUserSession, sessionOptions } from "@/../libs/auth/session";
 
 export default withIronSessionApiRoute(async function signup(
   req: NextApiRequest,

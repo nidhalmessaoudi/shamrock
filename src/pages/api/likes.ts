@@ -1,10 +1,10 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
-import { sessionOptions } from "../../../libs/auth/session";
+import { sessionOptions } from "@/../libs/auth/session";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
 import { LikeType } from "@prisma/client";
-import prisma from "../../../prisma/prisma";
+import prisma from "@/../prisma/prisma";
 
 export default withIronSessionApiRoute(async function posts(
   req: NextApiRequest,
