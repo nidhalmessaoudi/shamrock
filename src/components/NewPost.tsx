@@ -74,6 +74,10 @@ export default function NewPost(props: Props) {
   function submitPostHandler(e: MouseEvent) {
     e.preventDefault();
 
+    if (postMutation.isLoading) {
+      return;
+    }
+
     postMutation.mutate();
   }
 
@@ -199,8 +203,13 @@ export default function NewPost(props: Props) {
               onClick={submitPostHandler}
               disabled={postMutation.isLoading}
             >
-              {postMutation.isLoading && <Spinner />}
-              Post
+              {postMutation.isLoading && (
+                <>
+                  <Spinner />
+                  <span>Posting</span>
+                </>
+              )}
+              {!postMutation.isLoading && "Post"}
             </Button>
           </div>
         </div>

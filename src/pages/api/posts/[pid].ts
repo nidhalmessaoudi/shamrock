@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
 
-export default withIronSessionApiRoute(async function posts(
+export default withIronSessionApiRoute(async function post(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -46,7 +46,11 @@ async function getOnePost(req: NextApiRequest, res: NextApiResponse) {
 
     const post = await prisma.post.findUnique({
       where: { id: pid },
-      include: { author: true, likes: true },
+      include: {
+        author: true,
+        likes: true,
+        comments: { include: { author: true }, orderBy: { createdAt: "desc" } },
+      },
     });
 
     if (!post) {

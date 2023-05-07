@@ -97,7 +97,7 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 
         form.on("field", (fieldName, fieldVal) => {
           if (fieldName === "text") {
-            if (!fieldVal || !fieldVal.trim()) {
+            if (!fieldVal || typeof fieldVal !== "string" || !fieldVal.trim()) {
               throw new AppError("The post text cannot be empty.", 400, "fail");
             }
 

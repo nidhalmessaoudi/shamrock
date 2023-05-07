@@ -54,8 +54,8 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
     let postId = req.body.postId as string;
     let type = req.body.type as LikeType;
 
-    if (!postId) {
-      throw new AppError("No post id was provided.", 400, "fail");
+    if (!postId || typeof postId !== "string") {
+      throw new AppError("No valid post id was provided.", 400, "fail");
     }
 
     postId = postId.replaceAll("$", "");
