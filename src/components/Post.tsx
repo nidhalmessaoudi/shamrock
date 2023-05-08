@@ -22,11 +22,15 @@ export default function Post(props: Props) {
 
   const router = useRouter();
 
+  const [clicked, setClicked] = useState(false);
+
   const [reactions, setReactions] = useState({
     likes: post.likes.filter((like) => like.type === "LIKE").length,
     dislikes: post.likes.filter((like) => like.type === "DISLIKE").length,
     userReaction: userReact?.type,
   });
+
+  const commentsCount = post._count?.comments ?? post.comments.length;
 
   const likeMutation = useMutation((type: LikeType) => {
     const like = {
@@ -115,12 +119,15 @@ export default function Post(props: Props) {
     });
   }
 
-  function postClickHandler() {
-    if (props.fullPage) {
+  function postClickHandler(e: MouseEvent) {
+    if (props.fullPage || clicked) {
       return;
     }
 
-    router.push(`/posts/${post.id}`);
+    setClicked(true);
+    router.push(`/posts/${post.id}`, undefined, {
+      shallow: true,
+    });
   }
 
   return (
@@ -198,7 +205,7 @@ export default function Post(props: Props) {
         </div>
         <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green">
           <i className="bi bi-chat text-xl"></i>
-          <span>0</span>
+          <span>{commentsCount}</span>
         </div>
         <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green">
           <i className="bi bi-link-45deg text-xl"></i>

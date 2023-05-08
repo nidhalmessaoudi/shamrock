@@ -155,7 +155,11 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   try {
     const posts = await prisma.post.findMany({
-      include: { author: true, likes: true },
+      include: {
+        author: true,
+        likes: true,
+        _count: { select: { comments: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
 
