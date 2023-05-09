@@ -49,14 +49,16 @@ export default function Navbar(props: Props) {
   return (
     <nav className="fixed left-0 top-0 z-10 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 p-4 backdrop-blur-md dark:border-slate-500 dark:text-white">
       <Link href="/" shallow={true} className="flex flex-row items-center">
-        {mounted && (
-          <Image
-            src={currentTheme === "dark" ? logoWhite : logoBlack}
-            alt="Shamrock Logo"
-            width={32}
-            className="object-contain"
-          />
-        )}
+        <div className="w-8">
+          {mounted && (
+            <Image
+              src={currentTheme === "dark" ? logoWhite : logoBlack}
+              alt="Shamrock Logo"
+              width={32}
+              className="object-contain"
+            />
+          )}
+        </div>
         <h3 className="ml-2 bg-gradient-to-r from-black to-light-green bg-clip-text text-2xl font-bold uppercase text-transparent dark:from-light-green dark:to-green-blue">
           Shamrock
         </h3>

@@ -8,6 +8,7 @@ import axios from "axios";
 import { MouseEvent, useState } from "react";
 import { IUser } from "../../prisma/user";
 import { useRouter } from "next/router";
+import { mutate } from "swr";
 
 interface Props {
   data: IPost;
@@ -21,8 +22,21 @@ export default function Post(props: Props) {
   const userReact = post.likes.find((like) => like.userId === props.user.id);
 
   const router = useRouter();
+  const url = `/posts/${post.id}`;
 
   const [clicked, setClicked] = useState(false);
+
+  function postClickHandler() {
+    if (props.fullPage || clicked) {
+      return;
+    }
+
+    setClicked(true);
+
+    router.push({ pathname: url, query: { referrer: "/" } }, url, {
+      shallow: true,
+    });
+  }
 
   const [reactions, setReactions] = useState({
     likes: post.likes.filter((like) => like.type === "LIKE").length,
@@ -32,14 +46,25 @@ export default function Post(props: Props) {
 
   const commentsCount = post._count?.comments ?? post.comments.length;
 
-  const likeMutation = useMutation((type: LikeType) => {
-    const like = {
-      type,
-      postId: post.id,
-    };
+  const likeMutation = useMutation(
+    (type: LikeType) => {
+      const like = {
+        type,
+        postId: post.id,
+      };
 
-    return axios.post("/api/likes", like);
-  });
+      return axios.post("/api/likes", like);
+    },
+    {
+      onSuccess: () => {
+        if (props.fullPage) {
+          mutate("api/posts");
+        } else {
+          mutate(`/api/posts/${url}`, undefined, { revalidate: true });
+        }
+      },
+    }
+  );
 
   function likeHandler(likeType: LikeType) {
     if (likeMutation.isLoading) {
@@ -119,17 +144,6 @@ export default function Post(props: Props) {
     });
   }
 
-  function postClickHandler(e: MouseEvent) {
-    if (props.fullPage || clicked) {
-      return;
-    }
-
-    setClicked(true);
-    router.push(`/posts/${post.id}`, undefined, {
-      shallow: true,
-    });
-  }
-
   return (
     <article
       className={`mb-8 h-fit w-full transition-colors dark:border-slate-500 ${
@@ -139,15 +153,24 @@ export default function Post(props: Props) {
       }`}
       onClick={postClickHandler}
     >
-      <div className="flex flex-row items-center">
-        <DefaultProfilePicture className="w-16" />
-        <div className="ml-2 flex flex-col">
-          <span className="font-bold">{post.author.username}</span>
-          <div className="flex flex-row gap-x-1 text-sm text-black/70 dark:text-slate-400">
-            <span>{moment(post.createdAt).fromNow()}</span>
-            <span>·</span>
-            <span>{post.category}</span>
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center">
+          <DefaultProfilePicture className="w-16" />
+          <div className="ml-2 flex flex-col">
+            <span className="font-bold">{post.author.username}</span>
+            <div className="flex flex-row gap-x-1 text-sm text-black/70 dark:text-slate-400">
+              <span>{moment(post.createdAt).fromNow()}</span>
+              <span>·</span>
+              <span>{post.category}</span>
+            </div>
           </div>
+        </div>
+        <div
+          role="button"
+          className="mr-2 flex flex-row items-center rounded-xl border border-green-blue px-3 py-1 text-green-blue hover:underline dark:border-light-green dark:text-light-green"
+        >
+          <i className="bi bi-plus-lg mr-1 text-lg"></i>
+          <span>Follow</span>
         </div>
       </div>
       <p className="whitespace-pre-wrap p-2">{post.text}</p>

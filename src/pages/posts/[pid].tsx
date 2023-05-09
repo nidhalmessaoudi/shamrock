@@ -29,6 +29,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
     error,
     isLoading,
   } = useSWR(`/api/posts/${router.query.pid}`, postFetcher);
+
   const { mutate } = useSWRConfig();
 
   const commentMutation = useMutation(
@@ -49,7 +50,11 @@ export default function PostPage(props: { [key: string]: unknown }) {
   );
 
   function goToHomePage() {
-    router.push("/");
+    if (router.query.referrer === "/") {
+      router.back();
+    } else {
+      router.push("/", undefined, { shallow: true });
+    }
   }
 
   function renderComments() {
