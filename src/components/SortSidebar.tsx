@@ -46,7 +46,7 @@ export default function SortSidebar() {
   }
 
   return (
-    <Sidebar title="Sort By" className="mb-6">
+    <Sidebar title="Sort By">
       <div className="px-1 pb-1" onClick={sortClickHandler}>
         {renderSortOptions()}
       </div>

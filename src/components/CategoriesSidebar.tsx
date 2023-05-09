@@ -45,7 +45,7 @@ export default function CategoriesSidebar() {
   }
 
   return (
-    <Sidebar title="Categories" className="mb-6">
+    <Sidebar title="Categories">
       <div className="px-1 pb-1">{renderCategories()}</div>
     </Sidebar>
   );

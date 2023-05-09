@@ -2,7 +2,7 @@ import { MouseEventHandler, PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
   type?: "submit" | "button";
-  color?: "white" | "blue" | "grey" | "green";
+  color?: "white" | "blue" | "grey" | "green" | "outlineBlue";
   className?: string;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -15,6 +15,8 @@ export default function Button(props: Props) {
     grey: "focus:ring-slate-200/50 bg-slate-200 text-black",
     green:
       "focus:ring-green-600/50 bg-green-600 text-white dark:bg-green-400 dark:focus:ring-green-400/70",
+    outlineBlue:
+      "focus:ring-green-blue/50 bg-transparent text-green-blue border border-green-blue dark:border-light-green dark:text-light-green dark:focus:ring-light-green/50",
   };
 
   const color = (props.color || "blue") as keyof typeof colorVariants;

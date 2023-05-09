@@ -32,7 +32,7 @@ export default function FollowingSidebar() {
   }
 
   return (
-    <Sidebar title="Following" className="mb-6">
+    <Sidebar title="Following">
       <div className="px-1 pb-1">{renderFollowing()}</div>
     </Sidebar>
   );

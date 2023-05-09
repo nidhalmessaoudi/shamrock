@@ -42,7 +42,7 @@ export default function Home(props: { [key: string]: unknown }) {
       onNewPostModalClose={closeNewPostModal}
       showNewPostModal={showNewPostModal}
     >
-      <div className="mb-4 flex flex-row items-center justify-between">
+      <div className="my-4 flex flex-row items-center justify-between">
         <h2 className="text-3xl font-bold">Home</h2>
         <NewPostButton handler={newPostOpenHandler} />
       </div>

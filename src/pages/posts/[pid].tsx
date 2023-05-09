@@ -80,7 +80,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
   return (
     <HomePage user={user} title={`Post | ${K.BRAND}`}>
       <div
-        className="mb-4 flex w-fit cursor-pointer flex-row items-center hover:underline"
+        className="my-4 flex w-fit cursor-pointer flex-row items-center hover:underline"
         onClick={goToHomePage}
       >
         <i className="bi bi-chevron-left mr-1 text-2xl"></i>

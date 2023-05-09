@@ -45,17 +45,17 @@ export default function HomePage(props: Props) {
     <>
       <Head title={props.title} />
       <Navbar user={props.user} />
-      <div className="fixed right-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-4 pt-24">
+      <div className="fixed right-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-6 pt-24">
         <FollowingSidebar />
         <Footer />
       </div>
-      <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto pb-4 pt-24">
+      <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center overflow-auto pb-6 pt-24">
         <SortSidebar />
         <CategoriesSidebar />
         <NewPostButton handler={newPostOpenHandler} />
       </div>
 
-      <div className="mt-28 flex w-full flex-row items-center justify-center">
+      <div className="mt-24 flex w-full flex-row items-center justify-center">
         <div className="w-[42rem]">{props.children}</div>
       </div>
       {showNewPostModal && (
