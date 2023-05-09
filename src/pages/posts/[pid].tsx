@@ -13,7 +13,7 @@ import Button from "@/components/Button";
 import Comment from "@/components/Comment";
 import { IComment } from "../../../prisma/comment";
 import { ChangeEvent, useState } from "react";
-import { useMutation } from "react-query";
+import useSWRMutation, { MutationFetcher } from "swr/mutation";
 
 export default function PostPage(props: { [key: string]: unknown }) {
   const user = props.user as IUser;
@@ -32,22 +32,22 @@ export default function PostPage(props: { [key: string]: unknown }) {
 
   const { mutate } = useSWRConfig();
 
-  const commentMutation = useMutation(
-    () => {
+  const saveComment: MutationFetcher<IComment, undefined, string> =
+    async function (url) {
       const commentBody = {
         text: comment,
         postId: post?.id,
       };
 
-      return axios.post("/api/comments", commentBody);
+      return await axios.post(url, commentBody);
+    };
+
+  const commentMutation = useSWRMutation("/api/comments", saveComment, {
+    onSuccess: () => {
+      setComment("");
+      mutate(`/api/posts/${router.query.pid}`);
     },
-    {
-      onSuccess: () => {
-        setComment("");
-        mutate(`/api/posts/${router.query.pid}`);
-      },
-    }
-  );
+  });
 
   function goToHomePage() {
     if (router.query.referrer === "/") {
@@ -70,11 +70,11 @@ export default function PostPage(props: { [key: string]: unknown }) {
   }
 
   function submitCommentHandler() {
-    if (commentMutation.isLoading) {
+    if (commentMutation.isMutating) {
       return;
     }
 
-    commentMutation.mutate();
+    commentMutation.trigger(undefined);
   }
 
   return (
@@ -104,15 +104,16 @@ export default function PostPage(props: { [key: string]: unknown }) {
                 <Button
                   type="submit"
                   onClick={submitCommentHandler}
-                  disabled={commentMutation.isLoading}
+                  disabled={commentMutation.isMutating}
                 >
-                  {commentMutation.isLoading && (
+                  {commentMutation.isMutating ? (
                     <>
                       <Spinner />
                       <span>Commenting</span>
                     </>
+                  ) : (
+                    "Comment"
                   )}
-                  {!commentMutation.isLoading && "Comment"}
                 </Button>
               </div>
             </div>

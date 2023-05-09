@@ -3,12 +3,12 @@ import { IPost } from "../../prisma/post";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import Image from "next/image";
 import { LikeType } from "@prisma/client";
-import { useMutation } from "react-query";
 import axios from "axios";
 import { MouseEvent, useState } from "react";
 import { IUser } from "../../prisma/user";
 import { useRouter } from "next/router";
-import { mutate } from "swr";
+import useSWRMutation, { MutationFetcher } from "swr/mutation";
+import { ILike } from "../../prisma/like";
 
 interface Props {
   data: IPost;
@@ -46,33 +46,26 @@ export default function Post(props: Props) {
 
   const commentsCount = post._count?.comments ?? post.comments.length;
 
-  const likeMutation = useMutation(
-    (type: LikeType) => {
-      const like = {
-        type,
-        postId: post.id,
-      };
+  const reactToPost: MutationFetcher<ILike, LikeType, string> = async function (
+    url,
+    { arg }
+  ) {
+    const like = {
+      type: arg,
+      postId: post.id,
+    };
 
-      return axios.post("/api/likes", like);
-    },
-    {
-      onSuccess: () => {
-        if (props.fullPage) {
-          mutate("api/posts");
-        } else {
-          mutate(`/api/posts/${url}`, undefined, { revalidate: true });
-        }
-      },
-    }
-  );
+    return await axios.post(url, like);
+  };
+  const likeMutation = useSWRMutation("/api/likes", reactToPost);
 
   function likeHandler(likeType: LikeType) {
-    if (likeMutation.isLoading) {
+    if (likeMutation.isMutating) {
       return;
     }
 
     return (e: MouseEvent) => {
-      likeMutation.mutate(likeType);
+      likeMutation.trigger(likeType);
 
       setReactions((oldReactions) => {
         let userReaction: LikeType | undefined;

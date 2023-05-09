@@ -1,4 +1,3 @@
-import { useMutation } from "react-query";
 import { MouseEvent, useState, useEffect, ChangeEvent, useRef } from "react";
 import { IUser } from "../../prisma/user";
 import Button from "./Button";
@@ -6,6 +5,8 @@ import axios from "axios";
 import Spinner from "./Spinner";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import K from "@/K";
+import useSWRMutation, { MutationFetcher } from "swr/mutation";
+import { IPost } from "../../prisma/post";
 
 interface Props {
   onClose: () => void;
@@ -18,24 +19,24 @@ export default function NewPost(props: Props) {
   const imageInput = useRef<HTMLInputElement>(null);
   const [attachedImages, setAttachedImages] = useState<File[]>([]);
 
-  const postMutation = useMutation(
-    () => {
-      const post = {
-        text: val,
-        category,
-        images: attachedImages,
-      };
+  const savePost: MutationFetcher<IPost, undefined, string> = async function (
+    url
+  ) {
+    const post = {
+      text: val,
+      category,
+      images: attachedImages,
+    };
 
-      return axios.post("/api/posts", post, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    return await axios.post(url, post, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
+  const postMutation = useSWRMutation("/api/posts", savePost, {
+    onSuccess: () => {
+      props.onClose();
     },
-    {
-      onSuccess: () => {
-        props.onClose();
-      },
-    }
-  );
+  });
 
   useEffect(() => {
     function escapePressHandler(e: KeyboardEvent) {
@@ -74,11 +75,11 @@ export default function NewPost(props: Props) {
   function submitPostHandler(e: MouseEvent) {
     e.preventDefault();
 
-    if (postMutation.isLoading) {
+    if (postMutation.isMutating) {
       return;
     }
 
-    postMutation.mutate();
+    postMutation.trigger(undefined);
   }
 
   function attachImagesHandler() {
@@ -201,15 +202,16 @@ export default function NewPost(props: Props) {
             <Button
               type="submit"
               onClick={submitPostHandler}
-              disabled={postMutation.isLoading}
+              disabled={postMutation.isMutating}
             >
-              {postMutation.isLoading && (
+              {postMutation.isMutating ? (
                 <>
                   <Spinner />
                   <span>Posting</span>
                 </>
+              ) : (
+                "Post"
               )}
-              {!postMutation.isLoading && "Post"}
             </Button>
           </div>
         </div>
