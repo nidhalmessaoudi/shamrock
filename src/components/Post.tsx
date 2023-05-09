@@ -51,7 +51,7 @@ export default function Post(props: Props) {
     { arg }
   ) {
     const like = {
-      type: arg,
+      type: reactions.userReaction ? null : arg,
       postId: post.id,
     };
 
@@ -60,9 +60,9 @@ export default function Post(props: Props) {
   const likeMutation = useSWRMutation("/api/likes", reactToPost);
 
   function likeHandler(likeType: LikeType) {
-    if (likeMutation.isMutating) {
-      return;
-    }
+    // if (likeMutation.isMutating) {
+    //   return;
+    // }
 
     return (e: MouseEvent) => {
       likeMutation.trigger(likeType);

@@ -3,10 +3,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
-import { LikeType } from "@prisma/client";
+import { Like, LikeType, Prisma } from "@prisma/client";
 import prisma from "@/../prisma/prisma";
+import { Mutex } from "async-mutex";
 
-export default withIronSessionApiRoute(async function posts(
+const mutex = new Mutex();
+
+export default withIronSessionApiRoute(async function likes(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -52,7 +55,7 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
     }
 
     let postId = req.body.postId as string;
-    let type = req.body.type as LikeType;
+    let type = req.body.type as LikeType | null;
 
     if (!postId || typeof postId !== "string") {
       throw new AppError("No valid post id was provided.", 400, "fail");
@@ -60,37 +63,24 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
 
     postId = postId.replaceAll("$", "");
 
-    const post = await prisma.post.findUnique({ where: { id: postId } });
-
-    if (!post) {
-      throw new AppError(
-        "No post was found with the provided id.",
-        400,
-        "fail"
-      );
+    if (type && !K.LIKE_TYPES.includes(type)) {
+      type = null;
     }
 
-    if (!type || !K.LIKE_TYPES.includes(type)) {
-      type = "LIKE";
-    }
-
-    let like = await prisma.like.findUnique({
-      where: { likeIdentifier: { postId: postId, userId: userId } },
-    });
-
-    if (like) {
-      if (like.type !== type) {
-        like = await prisma.like.update({
-          where: { id: like.id },
-          data: { type },
+    const like = await mutex.runExclusive(async () => {
+      if (type) {
+        return await prisma.like.upsert({
+          where: { likeIdentifier: { postId: postId, userId: userId } },
+          update: { type },
+          create: { postId, userId, type },
         });
       } else {
-        await prisma.like.delete({ where: { id: like.id } });
-        like = null;
+        await prisma.like.delete({
+          where: { likeIdentifier: { postId: postId, userId: userId } },
+        });
+        return null;
       }
-    } else {
-      like = await prisma.like.create({ data: { type, postId, userId } });
-    }
+    });
 
     if (like) {
       return res.status(201).json({
@@ -103,6 +93,12 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
       return res.status(204).end();
     }
   } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.message.includes("Record to delete does not exist")
+    ) {
+      return res.status(204).end();
+    }
     throw err;
   }
 }
