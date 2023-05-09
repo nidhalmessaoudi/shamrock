@@ -95,7 +95,7 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.message.includes("Record to delete does not exist")
+      err.message.includes("Record to delete does not exist.")
     ) {
       return res.status(204).end();
     }

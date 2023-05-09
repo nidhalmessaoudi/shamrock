@@ -41,25 +41,23 @@ export default function Post(props: Props) {
   const [reactions, setReactions] = useState({
     likes: post.likes.filter((like) => like.type === "LIKE").length,
     dislikes: post.likes.filter((like) => like.type === "DISLIKE").length,
-    userReaction: userReact?.type,
+    userReaction: userReact?.type || null,
   });
 
   const commentsCount = post._count?.comments ?? post.comments.length;
 
-  const reactToPost: MutationFetcher<ILike, LikeType, string> = async function (
-    url,
-    { arg }
-  ) {
-    const like = {
-      type: reactions.userReaction ? null : arg,
-      postId: post.id,
-    };
+  const reactToPost: MutationFetcher<ILike, LikeType | null, string> =
+    async function (url, { arg }) {
+      const like = {
+        type: arg,
+        postId: post.id,
+      };
 
-    return await axios.post(url, like);
-  };
+      return await axios.post(url, like);
+    };
   const likeMutation = useSWRMutation("/api/likes", reactToPost);
 
-  function likeHandler(likeType: LikeType) {
+  function likeHandler(likeType: LikeType | null) {
     // if (likeMutation.isMutating) {
     //   return;
     // }
@@ -68,7 +66,7 @@ export default function Post(props: Props) {
       likeMutation.trigger(likeType);
 
       setReactions((oldReactions) => {
-        let userReaction: LikeType | undefined;
+        let userReaction: LikeType | null;
         let likes = oldReactions.likes;
         let dislikes = oldReactions.dislikes;
 
@@ -79,7 +77,7 @@ export default function Post(props: Props) {
               userReaction = "DISLIKE";
               dislikes += 1;
             } else {
-              userReaction = undefined;
+              userReaction = null;
             }
             break;
           case "DISLIKE":
@@ -88,7 +86,7 @@ export default function Post(props: Props) {
               userReaction = "LIKE";
               likes += 1;
             } else {
-              userReaction = undefined;
+              userReaction = null;
             }
             break;
           default:
@@ -179,7 +177,9 @@ export default function Post(props: Props) {
       >
         <div
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
-          onClick={likeHandler("LIKE")}
+          onClick={likeHandler(
+            reactions.userReaction === "LIKE" ? null : "LIKE"
+          )}
         >
           <i
             className={`bi bi-hand-thumbs-up${
@@ -200,7 +200,9 @@ export default function Post(props: Props) {
         </div>
         <div
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
-          onClick={likeHandler("DISLIKE")}
+          onClick={likeHandler(
+            reactions.userReaction === "DISLIKE" ? null : "DISLIKE"
+          )}
         >
           <i
             className={`bi bi-hand-thumbs-down${
