@@ -70,13 +70,13 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
     const like = await mutex.runExclusive(async () => {
       if (type) {
         return await prisma.like.upsert({
-          where: { likeIdentifier: { postId: postId, userId: userId } },
+          where: { likeIdentifier: { postId, userId } },
           update: { type },
           create: { postId, userId, type },
         });
       } else {
         await prisma.like.delete({
-          where: { likeIdentifier: { postId: postId, userId: userId } },
+          where: { likeIdentifier: { postId, userId } },
         });
         return null;
       }
@@ -97,7 +97,7 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.message.includes("Record to delete does not exist.")
     ) {
-      return res.status(204).end();
+      err = new AppError("Unvalid like type.", 400, "fail");
     }
     throw err;
   }

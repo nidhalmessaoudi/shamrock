@@ -64,8 +64,10 @@ model Follow {
   createdAt   DateTime @default(now())
   followerId  String   @db.ObjectId
   followingId String   @db.ObjectId
-  follower    User     @relation(name: "followers", fields: [followerId], references: [id])
-  following   User     @relation(name: "followings", fields: [followingId], references: [id])
+  follower    User     @relation(name: "followings", fields: [followerId], references: [id])
+  following   User     @relation(name: "followers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId], name: "followIdentifier")
 }
 
 enum Category {

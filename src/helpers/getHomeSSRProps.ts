@@ -14,12 +14,20 @@ const getHomeSSRProps = (
     if (userSession) {
       user = (await prisma.user.findUnique({
         where: { id: userSession.id },
+        select: {
+          followings: {
+            select: {
+              following: { select: { id: true, username: true, photo: true } },
+            },
+          },
+          id: true,
+          username: true,
+          photo: true,
+        },
       })) as IUser;
     }
 
     if (user) {
-      delete user.password;
-
       let additionalProps = null;
       if (cb) {
         additionalProps = await cb(ctx);

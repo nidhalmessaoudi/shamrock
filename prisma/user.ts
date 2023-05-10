@@ -1,9 +1,15 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import bcrypt from "bcrypt";
 
-export interface IUser extends Omit<User, "password"> {
-  password?: string;
+export interface BasicUser {
+  id: string;
+  username: string;
+  photo: string | null;
+}
+
+export interface IUser extends BasicUser {
+  followings: [{ following: BasicUser }];
 }
 
 export async function createUser(data: Prisma.UserCreateInput) {

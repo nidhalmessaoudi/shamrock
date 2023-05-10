@@ -9,6 +9,7 @@ import { IUser } from "../../prisma/user";
 import { useRouter } from "next/router";
 import useSWRMutation, { MutationFetcher } from "swr/mutation";
 import { ILike } from "../../prisma/like";
+import Link from "next/link";
 
 interface Props {
   data: IPost;
@@ -58,10 +59,6 @@ export default function Post(props: Props) {
   const likeMutation = useSWRMutation("/api/likes", reactToPost);
 
   function likeHandler(likeType: LikeType | null) {
-    // if (likeMutation.isMutating) {
-    //   return;
-    // }
-
     return (e: MouseEvent) => {
       likeMutation.trigger(likeType);
 
@@ -135,6 +132,27 @@ export default function Post(props: Props) {
     });
   }
 
+  function renderFollowButton() {
+    if (
+      post.author.id !== props.user.id &&
+      !props.user.followings.find(
+        (following) => following.following.id === post.author.id
+      )
+    ) {
+      return (
+        <div
+          role="button"
+          className="mr-2 flex flex-row items-center rounded-xl border border-green-blue px-3 py-1 text-green-blue hover:underline dark:border-light-green dark:text-light-green"
+        >
+          <i className="bi bi-plus-lg mr-1 text-lg"></i>
+          <span>Follow</span>
+        </div>
+      );
+    } else {
+      return "";
+    }
+  }
+
   return (
     <article
       className={`mb-8 h-fit w-full transition-colors dark:border-slate-500 ${
@@ -148,7 +166,13 @@ export default function Post(props: Props) {
         <div className="flex flex-row items-center">
           <DefaultProfilePicture className="w-16" />
           <div className="ml-2 flex flex-col">
-            <span className="font-bold">{post.author.username}</span>
+            <Link
+              href={`/users/${post.author.username}`}
+              className="font-bold hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {post.author.username}
+            </Link>
             <div className="flex flex-row gap-x-1 text-sm text-black/70 dark:text-slate-400">
               <span>{moment(post.createdAt).fromNow()}</span>
               <span>·</span>
@@ -156,13 +180,7 @@ export default function Post(props: Props) {
             </div>
           </div>
         </div>
-        <div
-          role="button"
-          className="mr-2 flex flex-row items-center rounded-xl border border-green-blue px-3 py-1 text-green-blue hover:underline dark:border-light-green dark:text-light-green"
-        >
-          <i className="bi bi-plus-lg mr-1 text-lg"></i>
-          <span>Follow</span>
-        </div>
+        {renderFollowButton()}
       </div>
       <p className="whitespace-pre-wrap p-2">{post.text}</p>
       {post.images.length > 0 && (

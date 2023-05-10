@@ -4,7 +4,8 @@ export default function Footer() {
       <p>Terms of service</p>
       <p>Privacy Policy</p>
       <p>
-        © {new Date().getFullYear()} Shamrock.site. All rights are reserved.
+        © {new Date().getFullYear()} Shamrock.site. Designed and developed by
+        Nidhal Messaoudi.
       </p>
     </footer>
   );
