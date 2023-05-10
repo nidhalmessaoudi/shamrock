@@ -2,7 +2,7 @@ import moment from "moment";
 import { IPost } from "../../prisma/post";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import Image from "next/image";
-import { LikeType } from "@prisma/client";
+import { Follow, LikeType } from "@prisma/client";
 import axios from "axios";
 import { MouseEvent, useState } from "react";
 import { IUser } from "../../prisma/user";
@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import useSWRMutation, { MutationFetcher } from "swr/mutation";
 import { ILike } from "../../prisma/like";
 import Link from "next/link";
+import Spinner from "./Spinner";
 
 interface Props {
   data: IPost;
@@ -26,6 +27,13 @@ export default function Post(props: Props) {
   const url = `/posts/${post.id}`;
 
   const [clicked, setClicked] = useState(false);
+
+  const [authorNotFollowed, setAuthorNotFollowed] = useState(
+    post.author.id !== props.user.id &&
+      !props.user.followings.find(
+        (following) => following.followed.id === post.author.id
+      )
+  );
 
   function postClickHandler() {
     if (props.fullPage || clicked) {
@@ -60,6 +68,8 @@ export default function Post(props: Props) {
 
   function likeHandler(likeType: LikeType | null) {
     return (e: MouseEvent) => {
+      e.stopPropagation();
+
       likeMutation.trigger(likeType);
 
       setReactions((oldReactions) => {
@@ -102,9 +112,31 @@ export default function Post(props: Props) {
           dislikes,
         };
       });
-
-      e.stopPropagation();
     };
+  }
+
+  const toggleFollow: MutationFetcher<Follow, undefined, string> =
+    async function (url, element) {
+      const followBody = {
+        followedId: props.data.author.id,
+      };
+
+      return await axios.post(url, followBody);
+    };
+  const followMutation = useSWRMutation("/api/follows", toggleFollow, {
+    onSuccess: () => {
+      setAuthorNotFollowed(false);
+    },
+  });
+
+  function followHandler(e: MouseEvent) {
+    e.stopPropagation();
+
+    if (followMutation.isMutating) {
+      return;
+    }
+
+    followMutation.trigger(undefined);
   }
 
   function renderImages() {
@@ -133,24 +165,27 @@ export default function Post(props: Props) {
   }
 
   function renderFollowButton() {
-    if (
-      post.author.id !== props.user.id &&
-      !props.user.followings.find(
-        (following) => following.following.id === post.author.id
-      )
-    ) {
-      return (
-        <div
-          role="button"
-          className="mr-2 flex flex-row items-center rounded-xl border border-green-blue px-3 py-1 text-green-blue hover:underline dark:border-light-green dark:text-light-green"
-        >
-          <i className="bi bi-plus-lg mr-1 text-lg"></i>
-          <span>Follow</span>
-        </div>
-      );
-    } else {
-      return "";
-    }
+    return (
+      <div
+        role="button"
+        onClick={followHandler}
+        className={`mr-2 flex flex-row items-center ${
+          followMutation.isMutating ? "opacity-50" : ""
+        } rounded-xl border border-green-blue px-3 py-1 text-green-blue hover:underline dark:border-light-green dark:text-light-green`}
+      >
+        {followMutation.isMutating ? (
+          <>
+            <Spinner color="black" />
+            <span>Following</span>
+          </>
+        ) : (
+          <>
+            <i className="bi bi-plus-lg mr-1 text-lg"></i>
+            <span>Follow</span>
+          </>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -180,7 +215,7 @@ export default function Post(props: Props) {
             </div>
           </div>
         </div>
-        {renderFollowButton()}
+        {authorNotFollowed && renderFollowButton()}
       </div>
       <p className="whitespace-pre-wrap p-2">{post.text}</p>
       {post.images.length > 0 && (

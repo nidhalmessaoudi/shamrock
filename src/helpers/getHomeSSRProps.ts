@@ -17,7 +17,7 @@ const getHomeSSRProps = (
         select: {
           followings: {
             select: {
-              following: { select: { id: true, username: true, photo: true } },
+              followed: { select: { id: true, username: true, photo: true } },
             },
           },
           id: true,

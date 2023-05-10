@@ -9,7 +9,7 @@ export interface BasicUser {
 }
 
 export interface IUser extends BasicUser {
-  followings: [{ following: BasicUser }];
+  followings: [{ followed: BasicUser }];
 }
 
 export async function createUser(data: Prisma.UserCreateInput) {

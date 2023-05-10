@@ -156,7 +156,7 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   try {
     const posts = await prisma.post.findMany({
       include: {
-        author: true,
+        author: { select: { id: true, username: true, photo: true } },
         likes: true,
         _count: { select: { comments: true } },
       },

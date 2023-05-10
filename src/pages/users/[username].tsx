@@ -6,12 +6,14 @@ import { useRouter } from "next/router";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import Button from "@/components/Button";
 import useSWR, { Fetcher } from "swr";
-import { Prisma } from "@prisma/client";
+import { Follow, Prisma, User } from "@prisma/client";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import useSWRMutation, { MutationFetcher } from "swr/mutation";
 
 type UserProfile = Prisma.UserGetPayload<{
   select: {
+    id: true;
     username: true;
     photo: true;
     _count: { select: { followers: true; followings: true } };
@@ -29,7 +31,28 @@ export default function UserPage(props: { [key: string]: unknown }) {
     data: user,
     error,
     isLoading,
+    mutate,
   } = useSWR(`/api/users/${router.query.username}`, userFetcher);
+
+  const toggleFollow: MutationFetcher<Follow, undefined, string> =
+    async function (url) {
+      const followBody = {
+        followedId: user?.id,
+      };
+
+      return await axios.post(url, followBody);
+    };
+  const followMutation = useSWRMutation("/api/follows", toggleFollow, {
+    onSuccess: () => {
+      mutate();
+    },
+  });
+
+  function followHandler(type: "FOLLOW" | "UNFOLLOW") {
+    return () => {
+      followMutation.trigger(undefined);
+    };
+  }
 
   return (
     <HomePage
@@ -45,19 +68,21 @@ export default function UserPage(props: { [key: string]: unknown }) {
                 <h2 className="mb-4 text-2xl font-bold">{user.username}</h2>
                 <div className="mb-4 text-sm">
                   <span className="mr-4">
-                    <span>{user._count.followers}</span>{" "}
+                    <span>{user._count.followings}</span>{" "}
                     <span className="text-black/70 dark:text-slate-400">
                       Following
                     </span>
                   </span>
                   <span>
-                    <span>{user._count.followings}</span>{" "}
+                    <span>{user._count.followers}</span>{" "}
                     <span className="text-black/70 dark:text-slate-400">
                       Followers
                     </span>
                   </span>
                 </div>
-                <Button color="outlineBlue">Follow</Button>
+                <Button color="outlineBlue" onClick={followHandler("FOLLOW")}>
+                  Follow
+                </Button>
               </>
             )}
             {isLoading && <Spinner color="black" />}

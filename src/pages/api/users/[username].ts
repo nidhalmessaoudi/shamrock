@@ -47,6 +47,7 @@ async function getOneUser(req: NextApiRequest, res: NextApiResponse) {
     const user = await prisma.user.findUnique({
       where: { username },
       select: {
+        id: true,
         username: true,
         photo: true,
         _count: {

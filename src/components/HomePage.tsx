@@ -46,7 +46,7 @@ export default function HomePage(props: Props) {
       <Head title={props.title} />
       <Navbar user={props.user} />
       <div className="fixed right-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-6 pt-24">
-        <FollowingSidebar />
+        <FollowingSidebar user={props.user} />
         <Footer />
       </div>
       <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center overflow-auto pb-6 pt-24">

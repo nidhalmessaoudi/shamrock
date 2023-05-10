@@ -47,9 +47,14 @@ async function getOnePost(req: NextApiRequest, res: NextApiResponse) {
     const post = await prisma.post.findUnique({
       where: { id: pid },
       include: {
-        author: true,
+        author: { select: { id: true, username: true, photo: true } },
         likes: true,
-        comments: { include: { author: true }, orderBy: { createdAt: "desc" } },
+        comments: {
+          include: {
+            author: { select: { id: true, username: true, photo: true } },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 

@@ -52,31 +52,38 @@ async function toggleFollow(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    let followingId = req.body.followingId as string;
+    let followedId = req.body.followedId as string;
 
-    if (!followingId || typeof followingId !== "string") {
+    if (!followedId || typeof followedId !== "string") {
       throw new AppError("No valid following id was provided.", 400, "fail");
     }
 
-    if (followingId === followerId) {
+    if (followedId === followerId) {
       throw new AppError("You can't follow yourself.", 400, "fail");
     }
 
-    followingId = followingId.replaceAll("$", "");
+    followedId = followedId.replaceAll("$", "");
 
-    let follow = await prisma.follow.findUnique({
-      where: { followIdentifier: { followerId, followingId } },
+    const follow = await mutex.runExclusive(async () => {
+      let follow = await prisma.follow.findUnique({
+        where: { followIdentifier: { followerId, followedId } },
+      });
+
+      if (follow) {
+        await prisma.follow.delete({
+          where: { followIdentifier: { followerId, followedId } },
+        });
+        return null;
+      } else {
+        return await prisma.follow.create({
+          data: { followerId, followedId },
+        });
+      }
     });
 
     if (follow) {
-      await prisma.follow.delete({
-        where: { followIdentifier: { followerId, followingId } },
-      });
       return res.status(204).end();
     } else {
-      follow = await prisma.follow.create({
-        data: { followerId, followingId },
-      });
       return res.status(201).json({
         status: "success",
         data: {
