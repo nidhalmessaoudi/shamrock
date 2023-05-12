@@ -3,6 +3,7 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
+import { ObjectId } from "bson";
 
 export default withIronSessionApiRoute(async function post(
   req: NextApiRequest,
@@ -36,8 +37,8 @@ async function getOnePost(req: NextApiRequest, res: NextApiResponse) {
   try {
     let { pid } = req.query;
 
-    if (!pid || typeof pid !== "string") {
-      throw new Error();
+    if (!pid || typeof pid !== "string" || ObjectId.isValid(pid)) {
+      throw new AppError("Invalid post id.", 400, "fail");
     }
 
     pid = pid.replaceAll("$", "");
