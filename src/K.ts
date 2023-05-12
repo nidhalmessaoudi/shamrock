@@ -1,5 +1,6 @@
 const K = {
   BRAND: "SHAMROCK",
+  USERNAME_MAX_LENGTH: 20,
   POST_CATEGORIES: ["All", "NBA", "NFL", "MLB", "Soccer", "UFC", "NHL"],
   POST_SORT_OPTIONS: ["Recent", "Top Rated", "Following"],
   POST_MAX_LENGTH: 10000,

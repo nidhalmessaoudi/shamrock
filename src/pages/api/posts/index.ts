@@ -52,8 +52,6 @@ export default withIronSessionApiRoute(async function posts(
         return res.redirect("/");
     }
   } catch (err) {
-    console.error(err);
-
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({
         status: err.status,
@@ -187,10 +185,10 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
 
     const postsOrderBy: Prisma.PostOrderByWithRelationInput = {};
 
-    if (sort === "Recent") {
-      postsOrderBy.createdAt = "desc";
-    } else if (sort === "Top Rated") {
+    if (sort === "Top Rated") {
       postsOrderBy.likes = { _count: "desc" };
+    } else {
+      postsOrderBy.createdAt = "desc";
     }
 
     let posts = await prisma.post.findMany({

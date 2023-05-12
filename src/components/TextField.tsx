@@ -8,6 +8,7 @@ interface Props {
   className?: string;
   disabled?: boolean;
   val?: string;
+  required?: boolean;
 }
 
 export default function TextField(props: Props) {
@@ -29,6 +30,7 @@ export default function TextField(props: Props) {
       } disabled:italic disabled:text-black/70`}
       disabled={props.disabled}
       defaultValue={props.val || ""}
+      required={props.required || false}
     />
   );
 

@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authenticateUser } from "@/../prisma/user";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { createUserSession, sessionOptions } from "@/../libs/auth/session";
+import { verify } from "./users";
+import { User } from "@prisma/client";
 
 export default withIronSessionApiRoute(async function signin(
   req: NextApiRequest,
@@ -10,16 +12,9 @@ export default withIronSessionApiRoute(async function signin(
   try {
     if (req.method !== "POST") return res.redirect("/signin");
 
-    const email = req.body.email as string;
-    const password = req.body.password as string;
+    req.body.type = "signin";
 
-    if (!email && !password) {
-      return res.redirect("/signin");
-    }
-
-    const user = await authenticateUser(email, password);
-
-    console.log(user);
+    const user = (await verify(req, res, true)) as User;
 
     if (user) {
       await createUserSession(req, user);
@@ -29,7 +24,7 @@ export default withIronSessionApiRoute(async function signin(
       return res.redirect("/signin");
     }
   } catch (err) {
-    console.log(err);
+    return res.redirect("/signin");
   }
 },
 sessionOptions);

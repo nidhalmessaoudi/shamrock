@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createUser } from "@/../prisma/user";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { createUserSession, sessionOptions } from "@/../libs/auth/session";
+import { verify } from "./users";
 
 export default withIronSessionApiRoute(async function signup(
   req: NextApiRequest,
@@ -10,23 +11,27 @@ export default withIronSessionApiRoute(async function signup(
   try {
     if (req.method !== "POST") return res.redirect("/signup");
 
-    const email = req.body.email as string;
-    const username = req.body.username as string;
-    const password = req.body.password as string;
+    req.body.type = "signup";
 
-    const user = await createUser({ email, username, password });
+    const safe = (await verify(req, res, true)) as string;
 
-    console.log(user);
+    if (safe === "SAFE") {
+      const user = await createUser({
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+      });
 
-    if (user) {
-      await createUserSession(req, user);
+      if (user) {
+        await createUserSession(req, user);
 
-      return res.redirect("/");
-    } else {
-      return res.redirect("/signup");
+        return res.redirect("/");
+      } else {
+        return res.redirect("/signup");
+      }
     }
   } catch (err) {
-    console.log(err);
+    return res.redirect("/signup");
   }
 },
 sessionOptions);

@@ -1,10 +1,11 @@
 interface Props {
-  color?: "white" | "black";
+  color?: "white" | "black" | "normal";
 }
 
 export default function Spinner(props: Props) {
   const colorVariants = {
     white: "text-white",
+    normal: "text-black",
     black: "text-green-blue dark:text-light-green",
   };
 

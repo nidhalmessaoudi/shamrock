@@ -25,8 +25,6 @@ export default withIronSessionApiRoute(async function likes(
         return res.redirect("/");
     }
   } catch (err) {
-    console.error(err);
-
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({
         status: err.status,
