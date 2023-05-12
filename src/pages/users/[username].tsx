@@ -10,6 +10,7 @@ import { Follow, Prisma, User } from "@prisma/client";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
 import useSWRMutation, { MutationFetcher } from "swr/mutation";
+import { useState } from "react";
 
 type UserProfile = Prisma.UserGetPayload<{
   select: {
@@ -25,6 +26,8 @@ export default function UserPage(props: { [key: string]: unknown }) {
 
   const router = useRouter();
 
+  const [userNotFollowed, setUserNotFollowed] = useState<boolean>();
+
   const userFetcher: Fetcher<UserProfile, string> = (url) =>
     axios.get(url).then((res) => res.data.data.user);
   const {
@@ -32,7 +35,22 @@ export default function UserPage(props: { [key: string]: unknown }) {
     error,
     isLoading,
     mutate,
-  } = useSWR(`/api/users/${router.query.username}`, userFetcher);
+  } = useSWR(`/api/users/${router.query.username}`, userFetcher, {
+    onSuccess: () => {
+      setUserNotFollowed((oldVal) => {
+        if (oldVal !== undefined) {
+          return oldVal;
+        } else {
+          return (
+            user?.id !== loggedInUser.id &&
+            !loggedInUser.followings.find(
+              (following) => following.followed.id === user?.id
+            )
+          );
+        }
+      });
+    },
+  });
 
   const toggleFollow: MutationFetcher<Follow, undefined, string> =
     async function (url) {
@@ -51,6 +69,11 @@ export default function UserPage(props: { [key: string]: unknown }) {
   function followHandler(type: "FOLLOW" | "UNFOLLOW") {
     return () => {
       followMutation.trigger(undefined);
+      if (type === "FOLLOW") {
+        setUserNotFollowed(false);
+      } else {
+        setUserNotFollowed(true);
+      }
     };
   }
 
@@ -80,9 +103,22 @@ export default function UserPage(props: { [key: string]: unknown }) {
                     </span>
                   </span>
                 </div>
-                <Button color="outlineBlue" onClick={followHandler("FOLLOW")}>
-                  Follow
-                </Button>
+                {loggedInUser.id !== user.id && (
+                  <>
+                    {userNotFollowed ? (
+                      <Button color="blue" onClick={followHandler("FOLLOW")}>
+                        Follow
+                      </Button>
+                    ) : (
+                      <Button
+                        color="outlineBlue"
+                        onClick={followHandler("UNFOLLOW")}
+                      >
+                        Unfollow
+                      </Button>
+                    )}
+                  </>
+                )}
               </>
             )}
             {isLoading && <Spinner color="black" />}

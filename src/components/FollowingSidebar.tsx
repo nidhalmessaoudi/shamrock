@@ -35,7 +35,7 @@ export default function FollowingSidebar(props: { user: IUser }) {
       <div
         className={`px-1 pb-1 ${
           !hasFollowings
-            ? "flex h-[20rem] flex-row items-center justify-center"
+            ? "flex h-[24rem] flex-row items-center justify-center"
             : ""
         }`}
       >

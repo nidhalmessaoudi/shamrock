@@ -1,6 +1,7 @@
 import { IComment } from "@/../prisma/comment";
 import DefaultProfilePicture from "./DefaultProfilePicture";
 import moment from "moment";
+import Link from "next/link";
 
 interface Props {
   comment: IComment;
@@ -14,7 +15,12 @@ export default function Comment(props: Props) {
       <div className="flex flex-row items-center">
         <DefaultProfilePicture className="w-16" />
         <div className="ml-2 flex flex-col">
-          <span className="font-bold">{comment.author.username}</span>
+          <Link
+            href={`/users/${comment.author.username}`}
+            className="font-bold hover:underline"
+          >
+            {comment.author.username}
+          </Link>
           <div className="flex flex-row gap-x-1 text-sm text-black/70 dark:text-slate-400">
             <span>{moment(comment.createdAt).fromNow()}</span>
             <span>·</span>

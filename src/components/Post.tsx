@@ -188,6 +188,13 @@ export default function Post(props: Props) {
     );
   }
 
+  async function copyLinkHandler(e: MouseEvent) {
+    const postUrl = `${location.origin}/posts/${post.id}`;
+    await navigator.clipboard.writeText(postUrl);
+    alert("Post Url copied to clipboard!");
+    e.stopPropagation();
+  }
+
   return (
     <article
       className={`mb-8 h-fit w-full transition-colors dark:border-slate-500 ${
@@ -229,6 +236,7 @@ export default function Post(props: Props) {
         } border-gray-200 px-24 py-1 dark:border-slate-500`}
       >
         <div
+          role="button"
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
           onClick={likeHandler(
             reactions.userReaction === "LIKE" ? null : "LIKE"
@@ -252,6 +260,7 @@ export default function Post(props: Props) {
           </span>
         </div>
         <div
+          role="button"
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
           onClick={likeHandler(
             reactions.userReaction === "DISLIKE" ? null : "DISLIKE"
@@ -274,11 +283,18 @@ export default function Post(props: Props) {
             {reactions.dislikes}
           </span>
         </div>
-        <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green">
+        <div
+          role="button"
+          className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
+        >
           <i className="bi bi-chat text-xl"></i>
           <span>{commentsCount}</span>
         </div>
-        <div className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green">
+        <div
+          role="button"
+          onClick={copyLinkHandler}
+          className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
+        >
           <i className="bi bi-link-45deg text-xl"></i>
           <span>Copy Link</span>
         </div>
