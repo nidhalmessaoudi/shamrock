@@ -2,7 +2,11 @@ import { MouseEvent, useState } from "react";
 import RadioButton from "./RadioButton";
 import Sidebar from "./Sidebar";
 
-export default function SortSidebar() {
+interface Props {
+  getSortOption: (sortOption: string) => void;
+}
+
+export default function SortSidebar(props: Props) {
   const [sortOption, setSortOption] = useState("Recent");
 
   function renderSortOptions() {
@@ -43,6 +47,7 @@ export default function SortSidebar() {
     }
 
     setSortOption(sortVal);
+    props.getSortOption(sortVal);
   }
 
   return (

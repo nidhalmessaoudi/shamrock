@@ -77,8 +77,17 @@ export default function PostPage(props: { [key: string]: unknown }) {
     commentMutation.trigger(undefined);
   }
 
+  function sortOptionHandler(sortOption: string) {
+    router.push("/");
+  }
+
   return (
-    <HomePage user={user} title={`Post | ${K.BRAND}`}>
+    <HomePage
+      user={user}
+      title={`Post | ${K.BRAND}`}
+      sortOptionHandler={sortOptionHandler}
+      activeCategoryHandler={sortOptionHandler}
+    >
       <div
         className="my-4 flex w-fit cursor-pointer flex-row items-center hover:underline"
         onClick={goToHomePage}

@@ -14,10 +14,17 @@ export default function Home(props: { [key: string]: unknown }) {
   const user = props.user as IUser;
 
   const [showNewPostModal, setShowNewPostModal] = useState(false);
+  const [sortOption, setSortOption] = useState("Recent");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const SWRFetcher: Fetcher<IPost[], string> = (url) =>
     axios.get(url).then((res) => res.data.data.posts);
-  const { data, error, isLoading } = useSWR("/api/posts", SWRFetcher);
+  const { data, error, isLoading } = useSWR(
+    `/api/posts?sort=${sortOption}${
+      activeCategory ? `&ctg=${activeCategory}` : ""
+    }`,
+    SWRFetcher
+  );
   const { mutate } = useSWRConfig();
 
   function closeNewPostModal() {
@@ -35,8 +42,18 @@ export default function Home(props: { [key: string]: unknown }) {
     setShowNewPostModal(true);
   }
 
+  function sortOptionHandler(sortOption: string) {
+    setSortOption(sortOption);
+  }
+
+  function activeCategoryHandler(activeCategory: string) {
+    setActiveCategory(activeCategory);
+  }
+
   return (
     <HomePage
+      sortOptionHandler={sortOptionHandler}
+      activeCategoryHandler={activeCategoryHandler}
       title={K.BRAND}
       user={user}
       onNewPostModalClose={closeNewPostModal}

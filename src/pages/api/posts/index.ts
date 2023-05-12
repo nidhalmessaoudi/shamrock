@@ -6,10 +6,11 @@ import formidable from "formidable";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
 import escapeHTML from "@/helpers/escapeHTML";
-import { Category } from "@prisma/client";
+import { Category, Post, Prisma } from "@prisma/client";
 import { PassThrough } from "stream";
 import s3Client from "@/../../libs/s3/s3Client";
 import { Upload } from "@aws-sdk/lib-storage";
+import { ObjectId } from "bson";
 
 export const config = {
   api: {
@@ -154,19 +155,86 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
 
 async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const posts = await prisma.post.findMany({
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new AppError(
+        "You need to be authenticated to access this route.",
+        403,
+        "fail"
+      );
+    }
+
+    let ctg = req.query.ctg as string | undefined;
+    let sort = req.query.sort as string;
+    let cursor = req.query.cursor as string | undefined;
+
+    if (
+      typeof ctg !== "string" ||
+      !K.POST_CATEGORIES.includes(ctg) ||
+      ctg === "All"
+    ) {
+      ctg = undefined;
+    }
+
+    if (typeof sort !== "string" || !K.POST_SORT_OPTIONS.includes(sort)) {
+      sort = "Recent";
+    }
+
+    if (typeof cursor !== "string" || !ObjectId.isValid(cursor)) {
+      cursor = undefined;
+    }
+
+    const postsOrderBy: Prisma.PostOrderByWithRelationInput = {};
+
+    if (sort === "Recent") {
+      postsOrderBy.createdAt = "desc";
+    } else if (sort === "Top Rated") {
+      postsOrderBy.likes = { _count: "desc" };
+    }
+
+    let posts = await prisma.post.findMany({
+      take: 50,
+      cursor: cursor ? { id: cursor } : undefined,
+      where: {
+        category: ctg as Category | undefined,
+      },
       include: {
         author: { select: { id: true, username: true, photo: true } },
         likes: true,
         _count: { select: { comments: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: postsOrderBy,
     });
+
+    if (posts && posts.length && sort === "Following") {
+      const filteredPosts = await Promise.all(
+        posts.map(async (post) => {
+          if (post.authorId === userId) {
+            return post;
+          }
+
+          const follow = await prisma.follow.findUnique({
+            where: {
+              followIdentifier: {
+                followerId: userId,
+                followedId: post.authorId,
+              },
+            },
+          });
+
+          return follow !== null ? post : null;
+        })
+      );
+
+      posts = filteredPosts.filter((post) => post !== null) as typeof posts;
+    }
 
     return res.status(200).json({
       status: "success",
       data: {
         posts,
+        cursor: posts && posts.length ? posts[posts.length - 1].id : null,
       },
     });
   } catch (err) {

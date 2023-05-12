@@ -77,8 +77,14 @@ export default function UserPage(props: { [key: string]: unknown }) {
     };
   }
 
+  function sortOptionHandler(sortOption: string) {
+    router.push("/");
+  }
+
   return (
     <HomePage
+      sortOptionHandler={sortOptionHandler}
+      activeCategoryHandler={sortOptionHandler}
       title={`${loggedInUser.username} | ${K.BRAND}`}
       user={loggedInUser}
     >

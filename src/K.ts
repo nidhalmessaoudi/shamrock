@@ -1,6 +1,7 @@
 const K = {
   BRAND: "SHAMROCK",
   POST_CATEGORIES: ["All", "NBA", "NFL", "MLB", "Soccer", "UFC", "NHL"],
+  POST_SORT_OPTIONS: ["Recent", "Top Rated", "Following"],
   POST_MAX_LENGTH: 10000,
   IMAGE_MAX_LENGTH: 4,
   IMAGE_MAX_SIZE: 20971520,

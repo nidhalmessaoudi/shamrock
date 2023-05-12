@@ -37,7 +37,7 @@ export default function NavbarDropdown(props: Props) {
       tabIndex={0}
       className="absolute right-0 top-below-parent z-20 w-96 cursor-auto overflow-auto rounded-xl border border-solid border-gray-200 bg-white p-1 dark:border-slate-500 dark:bg-slate-800"
     >
-      <DropdownItem title={props.username}>
+      <DropdownItem link={`/users/${props.username}`} title={props.username}>
         <DefaultProfilePicture className="mr-3 w-[80px]" />
         <span className="flex flex-col">
           <span className="font-bold">{props.username}</span>
@@ -46,10 +46,10 @@ export default function NavbarDropdown(props: Props) {
           </span>
         </span>
       </DropdownItem>
-      <DropdownItem link="/settings" title="Settings">
+      {/* <DropdownItem link="/settings" title="Settings">
         <DropdownIcon name="bi-gear" />
         <span>Settings</span>
-      </DropdownItem>
+      </DropdownItem> */}
       <DropdownItem title="Dark Mode" onClick={toggleDarkMode}>
         <div className="flex w-full flex-row items-center justify-between">
           <div>

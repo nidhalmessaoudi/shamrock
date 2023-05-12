@@ -6,8 +6,15 @@ import NHLIcon from "@/components/categoriesIcons/NHLIcon";
 import MLBIcon from "@/components/categoriesIcons/MLBIcon";
 import UFCIcon from "@/components/categoriesIcons/UFCIcon";
 import K from "@/K";
+import { useState } from "react";
 
-export default function CategoriesSidebar() {
+interface Props {
+  getActiveCategory: (activeCategory: string) => void;
+}
+
+export default function CategoriesSidebar(props: Props) {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
   function renderCategories() {
     const iconsComponents = {
       SoccerIcon,
@@ -29,8 +36,14 @@ export default function CategoriesSidebar() {
 
             return (
               <div
+                role="button"
+                onClick={categoryClickHandler(category)}
                 key={i}
-                className="flex cursor-pointer select-none flex-row items-center rounded-xl p-4 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600"
+                className={`flex cursor-pointer select-none flex-row items-center rounded-xl p-4 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600 ${
+                  activeCategory === category
+                    ? "bg-gray-300 dark:bg-slate-500"
+                    : ""
+                }`}
               >
                 <Icon />
                 <span className="ml-4 font-bold hover:underline">
@@ -42,6 +55,13 @@ export default function CategoriesSidebar() {
         )}
       </>
     );
+  }
+
+  function categoryClickHandler(category: string) {
+    return () => {
+      setActiveCategory(category);
+      props.getActiveCategory(category);
+    };
   }
 
   return (

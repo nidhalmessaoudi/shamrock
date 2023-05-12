@@ -8,10 +8,14 @@ import SortSidebar from "./SortSidebar";
 import CategoriesSidebar from "./CategoriesSidebar";
 import NewPostButton from "./NewPostButton";
 import NewPost from "./NewPost";
+import { useRouter } from "next/router";
+import K from "@/K";
 
 interface Props extends PropsWithChildren {
   title: string;
   user: IUser;
+  sortOptionHandler: (sortOption: string) => void;
+  activeCategoryHandler: (activeCategory: string) => void;
   showNewPostModal?: boolean;
   onNewPostModalClose?: () => void;
 }
@@ -50,8 +54,8 @@ export default function HomePage(props: Props) {
         <Footer />
       </div>
       <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center overflow-auto pb-6 pt-24">
-        <SortSidebar />
-        <CategoriesSidebar />
+        <SortSidebar getSortOption={props.sortOptionHandler} />
+        <CategoriesSidebar getActiveCategory={props.activeCategoryHandler} />
         <NewPostButton handler={newPostOpenHandler} />
       </div>
 

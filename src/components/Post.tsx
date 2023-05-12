@@ -216,7 +216,9 @@ export default function Post(props: Props) {
               {post.author.username}
             </Link>
             <div className="flex flex-row gap-x-1 text-sm text-black/70 dark:text-slate-400">
-              <span>{moment(post.createdAt).fromNow()}</span>
+              <span title={String(new Date(post.createdAt))}>
+                {moment(post.createdAt).fromNow()}
+              </span>
               <span>·</span>
               <span>{post.category}</span>
             </div>
