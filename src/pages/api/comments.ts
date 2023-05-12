@@ -63,7 +63,7 @@ async function createComment(req: NextApiRequest, res: NextApiResponse) {
 
     if (text.length > K.POST_MAX_LENGTH) {
       throw new AppError(
-        `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
+        `The comment cannot contain more than ${K.POST_MAX_LENGTH} character.`,
         400,
         "fail"
       );

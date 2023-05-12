@@ -36,6 +36,14 @@ export default function NewPost(props: Props) {
     onSuccess: () => {
       props.onClose();
     },
+    onError: (err) => {
+      let errorMessage = err.response?.data?.message;
+      if (!errorMessage) {
+        errorMessage = "Something went wrong! Check your connection.";
+      }
+
+      alert(errorMessage);
+    },
   });
 
   useEffect(() => {
@@ -76,6 +84,11 @@ export default function NewPost(props: Props) {
     e.preventDefault();
 
     if (postMutation.isMutating) {
+      return;
+    }
+
+    if (val.length > K.POST_MAX_LENGTH) {
+      alert(`A post cannot contain more than ${K.POST_MAX_LENGTH}.`);
       return;
     }
 

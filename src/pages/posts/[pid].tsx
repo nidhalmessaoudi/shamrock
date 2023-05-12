@@ -47,6 +47,14 @@ export default function PostPage(props: { [key: string]: unknown }) {
       setComment("");
       mutate(`/api/posts/${router.query.pid}`);
     },
+    onError: (err) => {
+      let errorMessage = err.response?.data?.message;
+      if (!errorMessage) {
+        errorMessage = "Something went wrong! Check your connection.";
+      }
+
+      alert(errorMessage);
+    },
   });
 
   function goToHomePage() {
@@ -71,6 +79,11 @@ export default function PostPage(props: { [key: string]: unknown }) {
 
   function submitCommentHandler() {
     if (commentMutation.isMutating) {
+      return;
+    }
+
+    if (comment.length > K.POST_MAX_LENGTH) {
+      alert(`A comment cannot contain more than ${K.POST_MAX_LENGTH}.`);
       return;
     }
 

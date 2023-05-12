@@ -6,7 +6,7 @@ import formidable from "formidable";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
 import escapeHTML from "@/helpers/escapeHTML";
-import { Category, Post, Prisma } from "@prisma/client";
+import { Category, Prisma } from "@prisma/client";
 import { PassThrough } from "stream";
 import s3Client from "@/../../libs/s3/s3Client";
 import { Upload } from "@aws-sdk/lib-storage";
