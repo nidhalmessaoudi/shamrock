@@ -21,18 +21,13 @@ interface Props {
 export default function Post(props: Props) {
   const post = props.data;
 
-  const userReact = post.likes.find((like) => like.userId === props.user.id);
-
   const router = useRouter();
   const url = `/posts/${post.id}`;
 
   const [clicked, setClicked] = useState(false);
 
   const [authorNotFollowed, setAuthorNotFollowed] = useState(
-    post.author.id !== props.user.id &&
-      !props.user.followings.find(
-        (following) => following.followed.id === post.author.id
-      )
+    !post.userIsFollowing ?? true
   );
 
   function postClickHandler() {
@@ -48,12 +43,12 @@ export default function Post(props: Props) {
   }
 
   const [reactions, setReactions] = useState({
-    likes: post.likes.filter((like) => like.type === "LIKE").length,
-    dislikes: post.likes.filter((like) => like.type === "DISLIKE").length,
-    userReaction: userReact?.type || null,
+    likes: post._count.likes ?? 0,
+    dislikes: post._count.dislikes ?? 0,
+    userReaction: post.userReaction || null,
   });
 
-  const commentsCount = post._count?.comments ?? post.comments.length;
+  const commentsCount = post._count.comments;
 
   const reactToPost: MutationFetcher<ILike, LikeType | null, string> =
     async function (url, { arg }) {
@@ -116,7 +111,7 @@ export default function Post(props: Props) {
   }
 
   const toggleFollow: MutationFetcher<Follow, undefined, string> =
-    async function (url, element) {
+    async function (url) {
       const followBody = {
         followedId: props.data.author.id,
       };
@@ -189,10 +184,24 @@ export default function Post(props: Props) {
   }
 
   async function copyLinkHandler(e: MouseEvent) {
+    e.stopPropagation();
     const postUrl = `${location.origin}/posts/${post.id}`;
     await navigator.clipboard.writeText(postUrl);
     alert("Post Url copied to clipboard!");
-    e.stopPropagation();
+  }
+
+  function truncateText(text: string) {
+    if (text.length <= 200) {
+      return text;
+    }
+    return (
+      <>
+        {text.substring(0, 200 + 1)}...{" "}
+        <span className="text-green-blue hover:underline dark:text-light-green">
+          Show More
+        </span>
+      </>
+    );
   }
 
   return (
@@ -226,9 +235,14 @@ export default function Post(props: Props) {
         </div>
         {authorNotFollowed && renderFollowButton()}
       </div>
-      <p className="whitespace-pre-wrap p-2">{post.text}</p>
+      <p className="whitespace-pre-wrap p-2">
+        {props.fullPage ? post.text : truncateText(post.text)}
+      </p>
       {post.images.length > 0 && (
-        <div className="relative mx-2 mb-4 mt-1 flex max-h-[42rem] select-none flex-row flex-wrap justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-slate-500">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="relative mx-2 mb-4 mt-1 flex max-h-[42rem] select-none flex-row flex-wrap justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-slate-500"
+        >
           {renderImages()}
         </div>
       )}

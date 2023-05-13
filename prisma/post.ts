@@ -1,10 +1,16 @@
-import { Prisma } from "@prisma/client";
+import { LikeType, Post } from "@prisma/client";
 
-export type IPost = Prisma.PostGetPayload<{
-  include: {
-    author: true;
-    likes: true;
-    comments: true;
-    _count: { select: { comments: true } };
+export interface IPost extends Post {
+  _count: {
+    comments: number;
+    likes?: number;
+    dislikes?: number;
   };
-}>;
+  author: {
+    id: string;
+    username: string;
+    photo: string | null;
+  };
+  userReaction?: LikeType;
+  userIsFollowing?: boolean;
+}

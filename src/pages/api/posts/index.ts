@@ -11,6 +11,7 @@ import { PassThrough } from "stream";
 import s3Client from "@/../../libs/s3/s3Client";
 import { Upload } from "@aws-sdk/lib-storage";
 import { ObjectId } from "bson";
+import { IPost } from "@/../prisma/post";
 
 export const config = {
   api: {
@@ -191,7 +192,7 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
       postsOrderBy.createdAt = "desc";
     }
 
-    let posts = await prisma.post.findMany({
+    let posts: IPost[] = await prisma.post.findMany({
       take: 50,
       cursor: cursor ? { id: cursor } : undefined,
       where: {
@@ -199,19 +200,33 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
       },
       include: {
         author: { select: { id: true, username: true, photo: true } },
-        likes: true,
         _count: { select: { comments: true } },
       },
       orderBy: postsOrderBy,
     });
 
-    if (posts && posts.length && sort === "Following") {
-      const filteredPosts = await Promise.all(
-        posts.map(async (post) => {
-          if (post.authorId === userId) {
-            return post;
-          }
+    let prodPosts: IPost[] = await Promise.all(
+      posts.map(async (post) => {
+        const prodPost = post;
 
+        prodPost._count.likes = await prisma.like.count({
+          where: { postId: post.id, type: "LIKE" },
+        });
+        prodPost._count.dislikes = await prisma.like.count({
+          where: { postId: post.id, type: "DISLIKE" },
+        });
+
+        const like = await prisma.like.findUnique({
+          where: { likeIdentifier: { userId, postId: post.id } },
+        });
+
+        if (like) {
+          prodPost.userReaction = like.type;
+        }
+
+        if (post.authorId === userId) {
+          prodPost.userIsFollowing = true;
+        } else {
           const follow = await prisma.follow.findUnique({
             where: {
               followIdentifier: {
@@ -221,18 +236,25 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
             },
           });
 
-          return follow !== null ? post : null;
-        })
-      );
+          if (follow) {
+            prodPost.userIsFollowing = true;
+          }
+        }
 
-      posts = filteredPosts.filter((post) => post !== null) as typeof posts;
+        return prodPost;
+      })
+    );
+
+    if (sort === "Following") {
+      prodPosts = prodPosts.filter((post) => post.userIsFollowing);
     }
 
     return res.status(200).json({
       status: "success",
       data: {
-        posts,
-        cursor: posts && posts.length ? posts[posts.length - 1].id : null,
+        posts: prodPosts,
+        cursor:
+          prodPosts && prodPosts.length ? prodPosts[posts.length - 1].id : null,
       },
     });
   } catch (err) {

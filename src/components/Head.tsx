@@ -13,7 +13,7 @@ export default function Head(props: Props) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta
         name="description"
-        content="Pikri.com is a social media platform for sports bettors."
+        content="Shamrock.site is a social media platform for sports bettors."
       />
       <link rel="icon" href="/favicon.ico" />
     </HeadEl>
