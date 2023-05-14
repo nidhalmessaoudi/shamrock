@@ -14,6 +14,7 @@ import Comment from "@/components/Comment";
 import { IComment } from "../../../prisma/comment";
 import { ChangeEvent, useState } from "react";
 import useSWRMutation, { MutationFetcher } from "swr/mutation";
+import Error from "next/error";
 
 export default function PostPage(props: { [key: string]: unknown }) {
   const user = props.user as IUser;
@@ -28,9 +29,26 @@ export default function PostPage(props: { [key: string]: unknown }) {
     data: post,
     error,
     isLoading,
-  } = useSWR(`/api/posts/${router.query.pid}`, postFetcher);
+  } = useSWR(`/api/posts/${router.query.pid}`, postFetcher, {
+    onSuccess: (data) => {
+      loadComments({ postId: data.id });
+    },
+  });
 
   const { mutate } = useSWRConfig();
+
+  const commentsFetcher: MutationFetcher<
+    IComment[],
+    { postId: string },
+    string
+  > = (url, { arg }) =>
+    axios.get(`${url}?pid=${arg.postId}`).then((res) => res.data.data.comments);
+  const {
+    data: comments,
+    error: commentsError,
+    isMutating: commentsIsLoading,
+    trigger: loadComments,
+  } = useSWRMutation("/api/comments", commentsFetcher);
 
   const saveComment: MutationFetcher<IComment, undefined, string> =
     async function (url) {
@@ -45,6 +63,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
   const commentMutation = useSWRMutation("/api/comments", saveComment, {
     onSuccess: () => {
       setComment("");
+      loadComments({ postId: post!.id });
       mutate(`/api/posts/${router.query.pid}`);
     },
     onError: (err) => {
@@ -66,7 +85,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
   }
 
   function renderComments() {
-    return post?.comments?.map((comment, i) => (
+    return comments?.map((comment, i) => (
       <Comment key={i} comment={comment as IComment} />
     ));
   }
@@ -92,6 +111,10 @@ export default function PostPage(props: { [key: string]: unknown }) {
 
   function sortOptionHandler(sortOption: string) {
     router.push("/");
+  }
+
+  if (error && error.response.status === 404) {
+    return <Error statusCode={404} title={`Post not found | ${K.BRAND}`} />;
   }
 
   return (
@@ -139,13 +162,23 @@ export default function PostPage(props: { [key: string]: unknown }) {
                 </Button>
               </div>
             </div>
-            {renderComments()}
+            {comments && renderComments()}
+            {commentsIsLoading && (
+              <div className="mt-8 flex w-full flex-row items-center justify-center px-8">
+                <Spinner color="black" />
+              </div>
+            )}
+            {commentsError && (
+              <p className="mt-8 w-full px-8 text-center">
+                Failed to load comments!
+              </p>
+            )}
           </div>
         </>
       )}
       <div className="my-8 flex flex-row items-center justify-center">
         {isLoading && <Spinner color="black" />}
-        {!isLoading && error && <p>Failed to load comments!</p>}
+        {!isLoading && error && <p>Failed to load Post!</p>}
       </div>
     </HomePage>
   );

@@ -83,6 +83,9 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
     const form = formidable({
       maxFiles: K.IMAGE_MAX_LENGTH,
       maxFileSize: K.IMAGE_MAX_SIZE,
+      filter: function ({ name, originalFilename, mimetype }) {
+        return mimetype !== null && mimetype.includes("image");
+      },
       // @ts-ignore
       fileWriteStreamHandler: uploadImagesToS3,
     });
@@ -186,9 +189,7 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
 
     const postsOrderBy: Prisma.PostOrderByWithRelationInput = {};
 
-    if (sort === "Top Rated") {
-      postsOrderBy.likes = { _count: "desc" };
-    } else {
+    if (sort !== "Top Rated") {
       postsOrderBy.createdAt = "desc";
     }
 
@@ -247,6 +248,10 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
 
     if (sort === "Following") {
       prodPosts = prodPosts.filter((post) => post.userIsFollowing);
+    } else if (sort === "Top Rated") {
+      prodPosts.sort(
+        (post1, post2) => post2._count.likes! - post1._count.likes!
+      );
     }
 
     return res.status(200).json({

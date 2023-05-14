@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
 import K from "@/K";
+import { ObjectId } from "bson";
 
 export default withIronSessionApiRoute(async function comments(
   req: NextApiRequest,
@@ -84,11 +85,46 @@ async function createComment(req: NextApiRequest, res: NextApiResponse) {
 
 async function getComments(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const comments = await prisma.comment.findMany();
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new AppError(
+        "You need to be authenticated to access this route.",
+        403,
+        "fail"
+      );
+    }
+
+    let pid = req.query.pid as string;
+    let cursor = req.query.cursor as string | undefined;
+
+    if (!pid || typeof pid !== "string" || !ObjectId.isValid(pid)) {
+      throw new AppError("Invalid post id.", 400, "fail");
+    }
+
+    if (typeof cursor !== "string" || !ObjectId.isValid(cursor)) {
+      cursor = undefined;
+    }
+
+    pid = pid.replaceAll("$", "");
+
+    const comments = await prisma.comment.findMany({
+      take: 50,
+      cursor: cursor ? { id: cursor } : undefined,
+      where: {
+        postId: pid,
+      },
+      include: {
+        author: { select: { id: true, username: true, photo: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
     return res.status(200).json({
       status: "success",
-      data: { comments },
+      data: {
+        comments,
+      },
     });
   } catch (err) {
     throw err;

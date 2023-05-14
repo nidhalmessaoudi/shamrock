@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
 
 export type IComment = Prisma.CommentGetPayload<{
-  include: { author: true };
+  include: { author: { select: { id: true; username: true; photo: true } } };
 }>;

@@ -1,25 +1,17 @@
 import HomePage from "@/components/HomePage";
 import getHomeSSRProps from "@/helpers/getHomeSSRProps";
-import { IUser } from "../../../prisma/user";
+import { IUser, UserProfile } from "@/../prisma/user";
 import K from "@/K";
 import { useRouter } from "next/router";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import Button from "@/components/Button";
 import useSWR, { Fetcher } from "swr";
-import { Follow, Prisma, User } from "@prisma/client";
+import { Follow } from "@prisma/client";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
 import useSWRMutation, { MutationFetcher } from "swr/mutation";
 import { useState } from "react";
-
-type UserProfile = Prisma.UserGetPayload<{
-  select: {
-    id: true;
-    username: true;
-    photo: true;
-    _count: { select: { followers: true; followings: true } };
-  };
-}>;
+import Error from "next/error";
 
 export default function UserPage(props: { [key: string]: unknown }) {
   const loggedInUser = props.user as IUser;
@@ -81,11 +73,15 @@ export default function UserPage(props: { [key: string]: unknown }) {
     router.push("/");
   }
 
+  if (error && error.response.status === 404) {
+    return <Error statusCode={404} title={`User not found | ${K.BRAND}`} />;
+  }
+
   return (
     <HomePage
       sortOptionHandler={sortOptionHandler}
       activeCategoryHandler={sortOptionHandler}
-      title={`${loggedInUser.username} | ${K.BRAND}`}
+      title={`${user ? user.username : "Loading User"} | ${K.BRAND}`}
       user={loggedInUser}
     >
       <div className="h-[32rem] w-full rounded-xl bg-gradient-to-b from-gray-100 to-transparent dark:from-slate-700">

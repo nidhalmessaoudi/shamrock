@@ -101,6 +101,17 @@ export default function NewPost(props: Props) {
     }
 
     const selectedFiles = Array.from(imageInput.current.files || []);
+
+    for (let file of selectedFiles) {
+      if (!file.type.startsWith("image/")) {
+        return alert("You can only upload images.");
+      }
+
+      if (file.size > K.IMAGE_MAX_SIZE) {
+        return alert("You cannot upload an image larger than 20MB.");
+      }
+    }
+
     const filesLength = attachedImages.length + selectedFiles.length;
 
     if (filesLength > K.IMAGE_MAX_LENGTH) {
@@ -113,7 +124,7 @@ export default function NewPost(props: Props) {
     ]);
   }
 
-  function fireAttachHandler() {
+  function fileAttachHandler() {
     imageInput.current?.click();
   }
 
@@ -197,7 +208,7 @@ export default function NewPost(props: Props) {
         <div className="absolute bottom-0 left-0 z-40 w-full bg-inherit px-6">
           <div className="flex items-center justify-between border-t border-solid border-gray-200 px-2 py-4 dark:border-slate-500">
             <button
-              onClick={fireAttachHandler}
+              onClick={fileAttachHandler}
               title="Attach Images"
               className="flex flex-row items-center justify-center rounded-xl border border-green-blue px-3 py-2 text-sm text-green-blue transition-colors hover:bg-green-blue/10 focus:shadow-lg focus:outline-none dark:border-light-green dark:text-light-green"
             >

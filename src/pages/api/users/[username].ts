@@ -62,6 +62,23 @@ async function getOneUser(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
+    // if (post.authorId === userId) {
+    //   post.userIsFollowing = true;
+    // } else {
+    //   const follow = await prisma.follow.findUnique({
+    //     where: {
+    //       followIdentifier: {
+    //         followerId: userId,
+    //         followedId: post.authorId,
+    //       },
+    //     },
+    //   });
+
+    //   if (follow) {
+    //     post.userIsFollowing = true;
+    //   }
+    // }
+
     return res.status(200).json({
       status: "success",
       data: { user },

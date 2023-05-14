@@ -12,6 +12,13 @@ export interface IUser extends BasicUser {
   followings: [{ followed: BasicUser }];
 }
 
+export interface UserProfile {
+  id: string;
+  username: string;
+  photo: string | null;
+  _count: { followers: number; followings: number };
+}
+
 export async function createUser(data: Prisma.UserCreateInput) {
   const user = await prisma.user.create({
     data: {
