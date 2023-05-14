@@ -9,6 +9,7 @@ import Spinner from "@/components/Spinner";
 import K from "@/K";
 import NewPostButton from "@/components/NewPostButton";
 import { useState } from "react";
+import SortDropdown from "@/components/SortDropdown";
 
 export default function Home(props: { [key: string]: unknown }) {
   const user = props.user as IUser;
@@ -59,9 +60,10 @@ export default function Home(props: { [key: string]: unknown }) {
       onNewPostModalClose={closeNewPostModal}
       showNewPostModal={showNewPostModal}
     >
-      <div className="my-4 flex flex-row items-center justify-between">
+      <div className="mb-4 flex flex-row items-center justify-between md:my-4">
         <h2 className="text-3xl font-bold">Home</h2>
         <NewPostButton handler={newPostOpenHandler} />
+        <SortDropdown getSortOption={sortOptionHandler} />
       </div>
       {data && renderPosts()}
       <div className="my-8 flex flex-row items-center justify-center">

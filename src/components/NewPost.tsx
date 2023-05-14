@@ -145,7 +145,7 @@ export default function NewPost(props: Props) {
       onClick={overlayClickHandler}
     >
       <div
-        className="new-post relative z-40 my-auto h-[30rem] w-2/5 overflow-hidden rounded-xl bg-white dark:bg-slate-800"
+        className="new-post relative z-40 my-auto h-[30rem] w-[95vw] overflow-hidden rounded-xl bg-white dark:bg-slate-800 sm:w-[80vw] lg:w-[70%] xl:w-3/5 2xl:w-2/5"
         tabIndex={0}
       >
         <div className="absolute left-0 top-0 flex w-full flex-row items-center justify-between border-b border-solid border-gray-200 bg-inherit px-6 py-4 dark:border-slate-500">
@@ -184,7 +184,7 @@ export default function NewPost(props: Props) {
         {attachedImages.length > 0 && (
           <div className="px-6">
             <div
-              className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-2 border-t border-solid border-gray-200 px-2 py-4 dark:border-slate-500"
+              className="ml-[10%] flex flex-row flex-wrap items-center justify-between gap-y-2 border-t border-solid border-gray-200 px-2 py-4 dark:border-slate-500 md:gap-2"
               onClick={removeImageHandler}
             >
               {attachedImages.map((img, i) => {

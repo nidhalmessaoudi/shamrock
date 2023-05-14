@@ -55,11 +55,11 @@ export default function Navbar(props: Props) {
               src={currentTheme === "dark" ? logoWhite : logoBlack}
               alt="Shamrock Logo"
               width={32}
-              className="object-contain"
+              className="w-7 object-contain sm:w-8"
             />
           )}
         </div>
-        <h3 className="ml-2 bg-gradient-to-r from-black to-light-green bg-clip-text text-2xl font-bold uppercase text-transparent dark:from-light-green dark:to-green-blue">
+        <h3 className="ml-2 bg-gradient-to-r from-black to-light-green bg-clip-text text-xl font-bold uppercase text-transparent dark:from-light-green dark:to-green-blue sm:text-2xl">
           Shamrock
         </h3>
       </Link>
@@ -68,9 +68,11 @@ export default function Navbar(props: Props) {
         onClick={navbarDropdownHandler}
         title={props.user.username}
       >
-        <DefaultProfilePicture className="mr-2 w-9" />
-        <span className="mr-2">{truncateUsername(props.user.username)}</span>
-        <i className="bi bi-chevron-down text-xl"></i>
+        <DefaultProfilePicture className="mr-2 w-8 sm:w-9" />
+        <span className="mr-2 w-[8ch] overflow-hidden text-ellipsis sm:w-[12ch]">
+          {props.user.username}
+        </span>
+        <i className="bi bi-chevron-down text-base sm:text-xl"></i>
         {showNavbarDropdown && (
           <NavbarDropdown username={props.user.username} />
         )}

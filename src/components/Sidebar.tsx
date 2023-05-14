@@ -8,7 +8,7 @@ interface Props extends PropsWithChildren {
 export default function Sidebar(props: Props) {
   return (
     <div
-      className={`mb-6 max-h-[36rem] w-[24rem] overflow-hidden break-words rounded-xl bg-gray-100 dark:bg-slate-700 ${
+      className={`mb-4 max-h-[36rem] min-h-fit w-[18rem] break-words rounded-xl bg-gray-100 dark:bg-slate-700 xl:w-[20rem] min-[1728px]:w-[24rem] ${
         props.className || ""
       }`}
     >

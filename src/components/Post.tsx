@@ -208,7 +208,7 @@ export default function Post(props: Props) {
     <article
       className={`mb-8 h-fit w-full transition-colors dark:border-slate-500 ${
         !props.fullPage
-          ? "cursor-pointer rounded-xl border border-gray-200 px-4 pt-4 hover:bg-gray-200/20 dark:hover:bg-slate-700/20"
+          ? "cursor-pointer rounded-xl border border-gray-200 px-2 pt-2 hover:bg-gray-200/20 dark:hover:bg-slate-700/20 sm:px-4 sm:pt-4"
           : ""
       }`}
       onClick={postClickHandler}
@@ -247,9 +247,9 @@ export default function Post(props: Props) {
         </div>
       )}
       <div
-        className={`mx-2 mt-2 flex select-none flex-row items-center justify-between gap-x-2 ${
+        className={`mx-2 mt-2 flex select-none flex-row items-center justify-between sm:gap-x-2 ${
           !props.fullPage ? "border-t" : "border-y"
-        } border-gray-200 px-24 py-1 dark:border-slate-500`}
+        } border-gray-200 px-1 py-1 text-sm dark:border-slate-500 sm:text-base md:px-24 min-[1228px]:px-12 2xl:px-24`}
       >
         <div
           role="button"
@@ -263,7 +263,7 @@ export default function Post(props: Props) {
               reactions.userReaction === "LIKE"
                 ? "-fill text-green-blue dark:text-light-green"
                 : ""
-            } text-xl`}
+            } sm:text-xl`}
           ></i>
           <span
             className={
@@ -287,7 +287,7 @@ export default function Post(props: Props) {
               reactions.userReaction === "DISLIKE"
                 ? "-fill text-green-blue dark:text-light-green"
                 : ""
-            } text-xl`}
+            } sm:text-xl`}
           ></i>
           <span
             className={
@@ -303,7 +303,7 @@ export default function Post(props: Props) {
           role="button"
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
         >
-          <i className="bi bi-chat text-xl"></i>
+          <i className="bi bi-chat sm:text-xl"></i>
           <span>{commentsCount}</span>
         </div>
         <div
@@ -311,8 +311,8 @@ export default function Post(props: Props) {
           onClick={copyLinkHandler}
           className="flex cursor-pointer items-center gap-x-2 rounded-full px-4 py-2 transition-colors hover:bg-green-blue/10 hover:text-green-blue dark:hover:bg-light-green/10 dark:hover:text-light-green"
         >
-          <i className="bi bi-link-45deg text-xl"></i>
-          <span>Copy Link</span>
+          <i className="bi bi-link-45deg sm:text-xl"></i>
+          <span className="text-xs sm:text-base">Copy Link</span>
         </div>
       </div>
     </article>

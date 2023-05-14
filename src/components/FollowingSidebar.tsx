@@ -19,6 +19,7 @@ export default function FollowingSidebar(props: { user: IUser }) {
               key={i}
               className="flex cursor-pointer flex-row items-center rounded-xl p-2 transition-colors hover:bg-gray-200 dark:hover:bg-slate-600"
               title={following.followed.username}
+              shallow={true}
             >
               <DefaultProfilePicture className="w-14" />
               <span className="ml-2 font-bold hover:underline">
@@ -31,7 +32,7 @@ export default function FollowingSidebar(props: { user: IUser }) {
   }
 
   return (
-    <Sidebar title="Latest Following" className="min-h-[32rem]">
+    <Sidebar title="Latest Following" className="!min-h-[32rem]">
       <div
         className={`px-1 pb-1 ${
           !hasFollowings

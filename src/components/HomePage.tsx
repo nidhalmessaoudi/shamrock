@@ -8,8 +8,7 @@ import SortSidebar from "./SortSidebar";
 import CategoriesSidebar from "./CategoriesSidebar";
 import NewPostButton from "./NewPostButton";
 import NewPost from "./NewPost";
-import { useRouter } from "next/router";
-import K from "@/K";
+import NewPostButtonCircle from "./NewPostButtonCircle";
 
 interface Props extends PropsWithChildren {
   title: string;
@@ -49,19 +48,23 @@ export default function HomePage(props: Props) {
     <>
       <Head title={props.title} />
       <Navbar user={props.user} />
-      <div className="fixed right-[8vw] top-0 flex h-screen flex-col items-center justify-center overflow-auto py-4 pb-6 pt-24">
-        <FollowingSidebar user={props.user} />
-        <Footer />
+      <div className="fixed right-[4vw] top-0 hidden min-h-screen flex-col items-center justify-center lg:right-[2vw] min-[1228px]:flex 2xl:right-[4vw] min-[1860px]:right-[7vw]">
+        <div className="max-h-screen overflow-auto pb-6 pt-24">
+          <FollowingSidebar user={props.user} />
+          <Footer />
+        </div>
       </div>
-      <div className="fixed left-[8vw] top-0 flex h-screen flex-col items-center overflow-auto pb-6 pt-24">
+      <div className="fixed left-[4vw] top-0 hidden h-screen flex-col items-center overflow-auto pb-6 pt-24 lg:left-[2vw] min-[1228px]:flex 2xl:left-[4vw] min-[1860px]:left-[7vw]">
         <SortSidebar getSortOption={props.sortOptionHandler} />
         <CategoriesSidebar getActiveCategory={props.activeCategoryHandler} />
         <NewPostButton handler={newPostOpenHandler} />
       </div>
-
       <div className="mt-24 flex w-full flex-row items-center justify-center">
-        <div className="w-[42rem]">{props.children}</div>
+        <div className="w-[90vw] sm:w-[80vw] min-[1228px]:w-[34rem] min-[1412px]:w-[40rem] 2xl:w-[44rem]">
+          {props.children}
+        </div>
       </div>
+      <NewPostButtonCircle handler={newPostOpenHandler} />
       {showNewPostModal && (
         <NewPost user={props.user} onClose={newPostCloseHandler} />
       )}
