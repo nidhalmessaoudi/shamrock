@@ -43,6 +43,7 @@ export default function AuthPage(props: Props) {
               <Link
                 href={props.otherPageLink}
                 className="mr-4 mt-4 text-sm opacity-80 transition-all hover:underline hover:opacity-100 focus:outline-none focus:ring-4 focus:ring-white/50 sm:mt-0"
+                shallow={true}
               >
                 {props.otherPageText}
               </Link>
