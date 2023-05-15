@@ -15,7 +15,21 @@ export default function Head(props: Props) {
         name="description"
         content="Shamrock.site is a social media platform for sports bettors."
       />
-      <link rel="icon" href="/favicon.ico" />
+      <link
+        rel="icon"
+        href="/favicons/faviconDark.ico"
+        media="(prefers-color-scheme:no-preference)"
+      />
+      <link
+        rel="icon"
+        href="/favicons/faviconLight.ico"
+        media="(prefers-color-scheme:dark)"
+      />
+      <link
+        rel="icon"
+        href="/favicons/faviconDark.ico"
+        media="(prefers-color-scheme:light)"
+      />
     </HeadEl>
   );
 }

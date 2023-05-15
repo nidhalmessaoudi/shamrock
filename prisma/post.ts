@@ -7,7 +7,7 @@ export interface IPost extends Post {
     dislikes?: number;
   };
   author: {
-    id: string;
+    id: number;
     username: string;
     photo: string | null;
   };

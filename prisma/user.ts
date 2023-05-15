@@ -3,7 +3,7 @@ import prisma from "./prisma";
 import bcrypt from "bcrypt";
 
 export interface BasicUser {
-  id: string;
+  id: number;
   username: string;
   photo: string | null;
 }
@@ -13,10 +13,11 @@ export interface IUser extends BasicUser {
 }
 
 export interface UserProfile {
-  id: string;
+  id: number;
   username: string;
   photo: string | null;
   _count: { followers: number; followings: number };
+  userIsFollowing?: boolean;
 }
 
 export async function createUser(data: Prisma.UserCreateInput) {

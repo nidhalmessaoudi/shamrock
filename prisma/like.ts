@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
+import { LikeType } from "@prisma/client";
 
-export type ILike = Prisma.LikeGetPayload<{
-  include: { user: true; post: true };
-}>;
+export interface ILike {
+  type: LikeType;
+}

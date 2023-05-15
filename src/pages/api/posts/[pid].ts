@@ -3,8 +3,7 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
-import { ObjectId } from "bson";
-import { IPost } from "../../../../prisma/post";
+import { IPost } from "@/../prisma/post";
 
 export default withIronSessionApiRoute(async function post(
   req: NextApiRequest,
@@ -46,16 +45,20 @@ async function getOnePost(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    let { pid } = req.query;
+    let pid = req.query.pid;
 
-    if (!pid || typeof pid !== "string" || !ObjectId.isValid(pid)) {
+    if (
+      !pid ||
+      typeof pid !== "string" ||
+      Math.sign(Number.parseInt(pid)) !== 1
+    ) {
       throw new AppError("Invalid post id.", 404, "fail");
     }
 
-    pid = pid.replaceAll("$", "");
+    const postId = Number.parseInt(pid);
 
     const post: IPost | null = await prisma.post.findUnique({
-      where: { id: pid },
+      where: { id: postId },
       include: {
         author: { select: { id: true, username: true, photo: true } },
         _count: {

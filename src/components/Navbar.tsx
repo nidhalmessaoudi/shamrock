@@ -69,7 +69,7 @@ export default function Navbar(props: Props) {
         title={props.user.username}
       >
         <DefaultProfilePicture className="mr-2 w-8 sm:w-9" />
-        <span className="mr-2 w-[8ch] overflow-hidden text-ellipsis sm:w-[12ch]">
+        <span className="mr-2 max-w-[8ch] overflow-hidden text-ellipsis sm:max-w-[12ch]">
           {props.user.username}
         </span>
         <i className="bi bi-chevron-down text-base sm:text-xl"></i>

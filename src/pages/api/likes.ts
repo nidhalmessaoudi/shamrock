@@ -52,14 +52,17 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    let postId = req.body.postId as string;
+    let postId = req.body.postId as number;
     let type = req.body.type as LikeType | null;
 
-    if (!postId || typeof postId !== "string") {
-      throw new AppError("No valid post id was provided.", 400, "fail");
+    if (
+      !postId ||
+      typeof postId !== "number" ||
+      !Number.isInteger(postId) ||
+      Math.sign(postId) !== 1
+    ) {
+      throw new AppError("Invalid post id.", 400, "fail");
     }
-
-    postId = postId.replaceAll("$", "");
 
     if (type && !K.LIKE_TYPES.includes(type)) {
       type = null;
@@ -71,6 +74,7 @@ async function toggleLike(req: NextApiRequest, res: NextApiResponse) {
           where: { likeIdentifier: { postId, userId } },
           update: { type },
           create: { postId, userId, type },
+          select: { type: true },
         });
       } else {
         await prisma.like.delete({

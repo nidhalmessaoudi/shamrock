@@ -16,9 +16,9 @@ export default withIronSessionApiRoute(async function follows(
       case "POST":
         await toggleFollow(req, res);
         break;
-      // case "GET":
-      //   await getFollows(req, res);
-      //   break;
+      case "GET":
+        await getFollows(req, res);
+        break;
       default:
         return res.redirect("/");
     }
@@ -50,17 +50,20 @@ async function toggleFollow(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    let followedId = req.body.followedId as string;
+    let followedId = req.body.followedId as number;
 
-    if (!followedId || typeof followedId !== "string") {
+    if (
+      !followedId ||
+      typeof followedId !== "number" ||
+      !Number.isInteger(followedId) ||
+      Math.sign(followedId) !== 1
+    ) {
       throw new AppError("No valid following id was provided.", 400, "fail");
     }
 
     if (followedId === followerId) {
       throw new AppError("You can't follow yourself.", 400, "fail");
     }
-
-    followedId = followedId.replaceAll("$", "");
 
     const follow = await mutex.runExclusive(async () => {
       let follow = await prisma.follow.findUnique({
@@ -94,4 +97,36 @@ async function toggleFollow(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function getFollows(req: NextApiRequest, res: NextApiResponse) {}
+async function getFollows(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new AppError(
+        "You need to be authenticated to access this route.",
+        403,
+        "fail"
+      );
+    }
+
+    const follows = await prisma.follow.findMany({
+      take: 6,
+      where: {
+        followerId: userId,
+      },
+      select: {
+        followed: { select: { id: true, username: true, photo: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        follows,
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+}

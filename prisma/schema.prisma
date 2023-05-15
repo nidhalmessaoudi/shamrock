@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         Int       @id @default(autoincrement())
   createdAt  DateTime  @default(now())
   email      String    @unique
   username   String    @unique
@@ -25,10 +25,10 @@ model User {
 }
 
 model Post {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   author    User      @relation(fields: [authorId], references: [id])
-  authorId  String    @db.ObjectId
+  authorId  Int
   text      String
   images    String[]  @default([])
   category  Category  @default(All)
@@ -37,12 +37,12 @@ model Post {
 }
 
 model Like {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   type      LikeType @default(LIKE)
-  postId    String   @db.ObjectId
+  postId    Int
   post      Post     @relation(fields: [postId], references: [id])
-  userId    String   @db.ObjectId
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
   version   Int      @default(1)
 
@@ -50,20 +50,20 @@ model Like {
 }
 
 model Comment {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   text      String
-  postId    String   @db.ObjectId
+  postId    Int
   post      Post     @relation(fields: [postId], references: [id])
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @db.ObjectId
+  authorId  Int
 }
 
 model Follow {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
-  followerId String   @db.ObjectId
-  followedId String   @db.ObjectId
+  followerId Int
+  followedId Int
   follower   User     @relation(name: "followers", fields: [followerId], references: [id])
   followed   User     @relation(name: "followings", fields: [followedId], references: [id])
 

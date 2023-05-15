@@ -3,7 +3,7 @@ import { IronSessionOptions } from "iron-session";
 import { NextApiRequest } from "next";
 
 export interface UserSession {
-  id: string;
+  id: number;
 }
 
 export const sessionOptions: IronSessionOptions = {

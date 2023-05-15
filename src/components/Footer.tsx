@@ -4,8 +4,16 @@ export default function Footer() {
       <p>Terms of service</p>
       <p>Privacy Policy</p>
       <p>
-        © {new Date().getFullYear()} Shamrock.site. Designed and developed by
-        Nidhal Messaoudi.
+        © {new Date().getFullYear()} Shamrock.site. Designed and developed by{" "}
+        <a
+          href="https://www.fiverr.com/nidhalmessaoudi"
+          target="_blank"
+          referrerPolicy="no-referrer"
+          className="hover:underline"
+        >
+          Nidhal Messaoudi
+        </a>
+        .
       </p>
     </footer>
   );

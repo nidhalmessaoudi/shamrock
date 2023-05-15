@@ -3,6 +3,7 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
+import { UserProfile } from "../../../../prisma/user";
 
 export default withIronSessionApiRoute(async function user(
   req: NextApiRequest,
@@ -34,15 +35,23 @@ sessionOptions);
 
 async function getOneUser(req: NextApiRequest, res: NextApiResponse) {
   try {
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new AppError(
+        "You need to be authenticated to access this route.",
+        403,
+        "fail"
+      );
+    }
+
     let { username } = req.query;
 
     if (!username || typeof username !== "string") {
       throw new Error();
     }
 
-    username = username.replaceAll("$", "");
-
-    const user = await prisma.user.findUnique({
+    const user: UserProfile | null = await prisma.user.findUnique({
       where: { username },
       select: {
         id: true,
@@ -62,22 +71,24 @@ async function getOneUser(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    // if (post.authorId === userId) {
-    //   post.userIsFollowing = true;
-    // } else {
-    //   const follow = await prisma.follow.findUnique({
-    //     where: {
-    //       followIdentifier: {
-    //         followerId: userId,
-    //         followedId: post.authorId,
-    //       },
-    //     },
-    //   });
+    if (user.id === userId) {
+      user.userIsFollowing = undefined;
+    } else {
+      const follow = await prisma.follow.findUnique({
+        where: {
+          followIdentifier: {
+            followerId: userId,
+            followedId: user.id,
+          },
+        },
+      });
 
-    //   if (follow) {
-    //     post.userIsFollowing = true;
-    //   }
-    // }
+      if (follow) {
+        user.userIsFollowing = true;
+      } else {
+        user.userIsFollowing = false;
+      }
+    }
 
     return res.status(200).json({
       status: "success",

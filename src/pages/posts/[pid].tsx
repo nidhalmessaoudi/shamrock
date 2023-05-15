@@ -39,7 +39,7 @@ export default function PostPage(props: { [key: string]: unknown }) {
 
   const commentsFetcher: MutationFetcher<
     IComment[],
-    { postId: string },
+    { postId: number },
     string
   > = (url, { arg }) =>
     axios.get(`${url}?pid=${arg.postId}`).then((res) => res.data.data.comments);

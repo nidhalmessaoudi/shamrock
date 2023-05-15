@@ -5,12 +5,10 @@ import prisma from "@/../prisma/prisma";
 import formidable from "formidable";
 import AppError from "@/helpers/AppError";
 import K from "@/K";
-import escapeHTML from "@/helpers/escapeHTML";
 import { Category, Prisma } from "@prisma/client";
 import { PassThrough } from "stream";
 import s3Client from "@/../../libs/s3/s3Client";
 import { Upload } from "@aws-sdk/lib-storage";
-import { ObjectId } from "bson";
 import { IPost } from "@/../prisma/post";
 
 export const config = {
@@ -91,57 +89,61 @@ async function createNewPost(req: NextApiRequest, res: NextApiResponse) {
     });
 
     const post = await new Promise((res, rej) => {
-      try {
-        let text: string;
-        let category: Category;
-        const images: string[] = [];
+      let text: string;
+      let category: Category;
+      const images: string[] = [];
 
-        form.parse(req);
+      form.parse(req);
 
-        form.on("field", (fieldName, fieldVal) => {
-          if (fieldName === "text") {
-            if (!fieldVal || typeof fieldVal !== "string" || !fieldVal.trim()) {
-              throw new AppError("The post text cannot be empty.", 400, "fail");
-            }
+      form.on("field", (fieldName, fieldVal) => {
+        if (fieldName === "text") {
+          if (!fieldVal || typeof fieldVal !== "string" || !fieldVal.trim()) {
+            return rej(
+              new AppError("The post text cannot be empty.", 400, "fail")
+            );
+          }
 
-            if (fieldVal.length > K.POST_MAX_LENGTH) {
-              throw new AppError(
+          if (fieldVal.length > K.POST_MAX_LENGTH) {
+            return rej(
+              new AppError(
                 `The post cannot contain more than ${K.POST_MAX_LENGTH} character.`,
                 400,
                 "fail"
-              );
-            }
-
-            text = escapeHTML(fieldVal);
+              )
+            );
           }
 
-          if (fieldName === "category") {
-            if (!fieldVal || !K.POST_CATEGORIES.includes(fieldVal)) {
-              category = K.POST_CATEGORIES[0] as Category;
-            } else {
-              category = fieldVal as Category;
-            }
+          text = fieldVal;
+        }
+
+        if (fieldName === "category") {
+          if (!fieldVal || !K.POST_CATEGORIES.includes(fieldVal)) {
+            category = K.POST_CATEGORIES[0] as Category;
+          } else {
+            category = fieldVal as Category;
           }
-        });
+        }
+      });
 
-        form.on("file", (_, file) => {
-          images.push(`${K.S3_IMAGES_URL}/${file.newFilename}`);
-        });
+      form.on("file", (_, file) => {
+        images.push(`${K.S3_IMAGES_URL}/${file.newFilename}`);
+      });
 
-        form.once("end", () => {
-          prisma.post
-            .create({
-              data: { text, category, authorId: userId, images },
-            })
-            .then((post) => res(post));
-        });
+      form.once("end", () => {
+        if (!text || !category) {
+          return;
+        }
 
-        form.on("error", (err) => {
-          throw err;
-        });
-      } catch (err) {
-        rej(err);
-      }
+        prisma.post
+          .create({
+            data: { text, category, authorId: userId, images },
+          })
+          .then((post) => res(post));
+      });
+
+      form.on("error", (err) => {
+        return rej(err);
+      });
     });
 
     return res.status(201).json({
@@ -169,7 +171,7 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
 
     let ctg = req.query.ctg as string | undefined;
     let sort = req.query.sort as string;
-    let cursor = req.query.cursor as string | undefined;
+    let queryCursor = req.query.cursor as string | undefined;
 
     if (
       typeof ctg !== "string" ||
@@ -183,8 +185,15 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
       sort = "Recent";
     }
 
-    if (typeof cursor !== "string" || !ObjectId.isValid(cursor)) {
+    let cursor;
+    if (
+      !queryCursor ||
+      typeof queryCursor !== "string" ||
+      Math.sign(Number.parseInt(queryCursor)) !== 1
+    ) {
       cursor = undefined;
+    } else {
+      cursor = Number.parseInt(queryCursor);
     }
 
     const postsOrderBy: Prisma.PostOrderByWithRelationInput = {};
@@ -194,7 +203,7 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
     }
 
     let posts: IPost[] = await prisma.post.findMany({
-      take: 50,
+      take: 20000,
       cursor: cursor ? { id: cursor } : undefined,
       where: {
         category: ctg as Category | undefined,
@@ -259,7 +268,9 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse) {
       data: {
         posts: prodPosts,
         cursor:
-          prodPosts && prodPosts.length ? prodPosts[posts.length - 1].id : null,
+          prodPosts && prodPosts.length
+            ? prodPosts[prodPosts.length - 1].id
+            : null,
       },
     });
   } catch (err) {

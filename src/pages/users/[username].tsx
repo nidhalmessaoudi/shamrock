@@ -5,7 +5,7 @@ import K from "@/K";
 import { useRouter } from "next/router";
 import DefaultProfilePicture from "@/components/DefaultProfilePicture";
 import Button from "@/components/Button";
-import useSWR, { Fetcher } from "swr";
+import useSWR, { Fetcher, useSWRConfig } from "swr";
 import { Follow } from "@prisma/client";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
@@ -20,6 +20,8 @@ export default function UserPage(props: { [key: string]: unknown }) {
 
   const [userNotFollowed, setUserNotFollowed] = useState<boolean>();
 
+  const { mutate: globalMutate } = useSWRConfig();
+
   const userFetcher: Fetcher<UserProfile, string> = (url) =>
     axios.get(url).then((res) => res.data.data.user);
   const {
@@ -27,22 +29,7 @@ export default function UserPage(props: { [key: string]: unknown }) {
     error,
     isLoading,
     mutate,
-  } = useSWR(`/api/users/${router.query.username}`, userFetcher, {
-    onSuccess: () => {
-      setUserNotFollowed((oldVal) => {
-        if (oldVal !== undefined) {
-          return oldVal;
-        } else {
-          return (
-            user?.id !== loggedInUser.id &&
-            !loggedInUser.followings.find(
-              (following) => following.followed.id === user?.id
-            )
-          );
-        }
-      });
-    },
-  });
+  } = useSWR(`/api/users/${router.query.username}`, userFetcher);
 
   const toggleFollow: MutationFetcher<Follow, undefined, string> =
     async function (url) {
@@ -55,17 +42,20 @@ export default function UserPage(props: { [key: string]: unknown }) {
   const followMutation = useSWRMutation("/api/follows", toggleFollow, {
     onSuccess: () => {
       mutate();
+      globalMutate(
+        (key) => typeof key === "string" && key.startsWith("/api/posts?")
+      );
     },
   });
 
   function followHandler(type: "FOLLOW" | "UNFOLLOW") {
     return () => {
-      followMutation.trigger(undefined);
       if (type === "FOLLOW") {
         setUserNotFollowed(false);
       } else {
         setUserNotFollowed(true);
       }
+      followMutation.trigger(undefined);
     };
   }
 
@@ -105,9 +95,9 @@ export default function UserPage(props: { [key: string]: unknown }) {
                     </span>
                   </span>
                 </div>
-                {loggedInUser.id !== user.id && (
+                {user.userIsFollowing !== undefined && (
                   <>
-                    {userNotFollowed ? (
+                    {!user.userIsFollowing || userNotFollowed ? (
                       <Button color="blue" onClick={followHandler("FOLLOW")}>
                         Follow
                       </Button>

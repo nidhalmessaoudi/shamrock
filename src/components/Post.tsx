@@ -11,6 +11,7 @@ import useSWRMutation, { MutationFetcher } from "swr/mutation";
 import { ILike } from "../../prisma/like";
 import Link from "next/link";
 import Spinner from "./Spinner";
+import { useSWRConfig } from "swr";
 
 interface Props {
   data: IPost;
@@ -20,6 +21,8 @@ interface Props {
 
 export default function Post(props: Props) {
   const post = props.data;
+
+  const { mutate } = useSWRConfig();
 
   const router = useRouter();
   const url = `/posts/${post.id}`;
@@ -57,9 +60,44 @@ export default function Post(props: Props) {
         postId: post.id,
       };
 
-      return await axios.post(url, like);
+      return await axios.post(url, like).then((res) => res.data?.data?.like);
     };
-  const likeMutation = useSWRMutation("/api/likes", reactToPost);
+  const likeMutation = useSWRMutation("/api/likes", reactToPost, {
+    onSuccess: (like) => {
+      if (props.fullPage) {
+        mutate(
+          (key) => typeof key === "string" && key.startsWith("/api/posts?")
+        );
+      } else {
+        const updatedPost = post;
+
+        if (like) {
+          if (like.type === "LIKE") {
+            updatedPost._count.likes! += 1;
+            updatedPost.userReaction = "LIKE";
+            if (reactions.userReaction === "DISLIKE") {
+              updatedPost._count.dislikes! -= 1;
+            }
+          } else if (like.type === "DISLIKE") {
+            updatedPost._count.dislikes! += 1;
+            updatedPost.userReaction = "DISLIKE";
+            if (reactions.userReaction === "LIKE") {
+              updatedPost._count.likes! -= 1;
+            }
+          } else {
+            updatedPost.userReaction = undefined;
+            if (reactions.userReaction === "LIKE") {
+              updatedPost._count.likes! -= 1;
+            } else if (reactions.userReaction === "DISLIKE") {
+              updatedPost._count.dislikes! -= 1;
+            }
+          }
+        }
+
+        mutate(`/api/posts/${post.id}`, updatedPost);
+      }
+    },
+  });
 
   function likeHandler(likeType: LikeType | null) {
     return (e: MouseEvent) => {
@@ -121,6 +159,7 @@ export default function Post(props: Props) {
   const followMutation = useSWRMutation("/api/follows", toggleFollow, {
     onSuccess: () => {
       setAuthorNotFollowed(false);
+      mutate(`/api/users/${post.author.username}`);
     },
   });
 

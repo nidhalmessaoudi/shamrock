@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/../libs/auth/session";
 import prisma from "@/../prisma/prisma";
 import K from "@/K";
-import { ObjectId } from "bson";
 
 export default withIronSessionApiRoute(async function comments(
   req: NextApiRequest,
@@ -49,14 +48,16 @@ async function createComment(req: NextApiRequest, res: NextApiResponse) {
       );
     }
 
-    let postId = req.body.postId as string;
+    let postId = req.body.postId as number;
     let text = req.body.text as string;
 
-    if (!postId || typeof postId !== "string") {
+    if (
+      !postId ||
+      typeof postId !== "number" ||
+      Math.sign(Number(postId)) !== 1
+    ) {
       throw new AppError("No valid post id was provided.", 400, "fail");
     }
-
-    postId = postId.replaceAll("$", "");
 
     if (!text || typeof text !== "string" || !text.trim()) {
       throw new AppError("The comment cannot be empty.", 400, "fail");
@@ -96,23 +97,34 @@ async function getComments(req: NextApiRequest, res: NextApiResponse) {
     }
 
     let pid = req.query.pid as string;
-    let cursor = req.query.cursor as string | undefined;
+    let queryCursor = req.query.cursor as string | undefined;
 
-    if (!pid || typeof pid !== "string" || !ObjectId.isValid(pid)) {
+    if (
+      !pid ||
+      typeof pid !== "string" ||
+      Math.sign(Number.parseInt(pid)) !== 1
+    ) {
       throw new AppError("Invalid post id.", 400, "fail");
     }
 
-    if (typeof cursor !== "string" || !ObjectId.isValid(cursor)) {
+    const postId = Number.parseInt(pid);
+
+    let cursor;
+    if (
+      !queryCursor ||
+      typeof queryCursor !== "string" ||
+      Math.sign(Number.parseInt(queryCursor)) !== 1
+    ) {
       cursor = undefined;
+    } else {
+      cursor = Number.parseInt(queryCursor);
     }
 
-    pid = pid.replaceAll("$", "");
-
     const comments = await prisma.comment.findMany({
-      take: 50,
+      take: 10000,
       cursor: cursor ? { id: cursor } : undefined,
       where: {
-        postId: pid,
+        postId,
       },
       include: {
         author: { select: { id: true, username: true, photo: true } },

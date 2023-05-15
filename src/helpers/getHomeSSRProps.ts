@@ -15,11 +15,6 @@ const getHomeSSRProps = (
       user = (await prisma.user.findUnique({
         where: { id: userSession.id },
         select: {
-          followings: {
-            select: {
-              followed: { select: { id: true, username: true, photo: true } },
-            },
-          },
           id: true,
           username: true,
           photo: true,

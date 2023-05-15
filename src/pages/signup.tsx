@@ -63,7 +63,7 @@ export default function Signup() {
       type="Sign Up"
       apiPath="/api/signup"
       otherPageLink="/signin"
-      otherPageText="Already a Pikri user? Sign In"
+      otherPageText="Already a Shamrock user? Sign In"
       submitBtnText={verifyUserMutation.isMutating ? "Signing Up" : undefined}
     >
       <TextField

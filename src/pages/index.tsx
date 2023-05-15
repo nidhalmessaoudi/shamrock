@@ -1,7 +1,7 @@
 import getHomeSSRProps from "@/helpers/getHomeSSRProps";
 import HomePage from "@/components/HomePage";
 import { IUser } from "../../prisma/user";
-import useSWR, { Fetcher, useSWRConfig } from "swr";
+import useSWR, { Fetcher } from "swr";
 import axios from "axios";
 import { IPost } from "../../prisma/post";
 import Post from "../components/Post";
@@ -20,16 +20,15 @@ export default function Home(props: { [key: string]: unknown }) {
 
   const SWRFetcher: Fetcher<IPost[], string> = (url) =>
     axios.get(url).then((res) => res.data.data.posts);
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     `/api/posts?sort=${sortOption}${
       activeCategory ? `&ctg=${activeCategory}` : ""
     }`,
     SWRFetcher
   );
-  const { mutate } = useSWRConfig();
 
   function closeNewPostModal() {
-    mutate("/api/posts");
+    mutate();
     setShowNewPostModal(false);
   }
 
